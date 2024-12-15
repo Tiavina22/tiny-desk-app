@@ -3,19 +3,19 @@
 Cette application de bureau Flutter est conçue pour résoudre le problème de gestion quotidienne des commandes, des bouts de code et des notes fréquemment utilisés. L'objectif est de stocker et d'organiser des commandes (par exemple, des commandes terminal), des snippets de code, et des notes personnelles dans un espace dédié, facilement accessible, et synchronisable avec un serveur pour une utilisation optimale même en l'absence de connexion Internet.
 
 ## Features principales :
-- [ ] Authentification :
+- [ ] **Authentification** :
     * [ ] login
     * [ ] inscription
     - Permet à l'utilisateur de créer un compte et de se connecter pour accéder à ses données personnelles.
     - Synchronisation des données entre plusieurs appareils via un serveur backend.
 
-- [ ] Ajout d'éléments :
-  - **Commandes** : Ajouter des commandes avec un titre, une description et la commande elle-même (peut être une ou plusieurs commandes).
-  - **Codes** : Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.
-  - **Notes** : Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.
+- [ ] **Ajout d'éléments** :
+    * [ ] Commandes : Ajouter des commandes avec un titre, une description et la commande elle-même (peut être une ou plusieurs commandes).
+    * [ ] Codes : Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.
+    * [ ] Notes : Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.
 
-- **Catégories**
-  - Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
+- [ ] **Catégories** :
+    * [ ] Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
 
 - **Recherche**
   - Permet à l'utilisateur de rechercher des commandes, des extraits de code ou des notes par titre ou description.
@@ -97,7 +97,7 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 
 ## Contributeurs
 
-- **Ramilison Noharitiana Vonitiavina** : Développeur principal
+- **Tiavina Ramilison** : Software Engineer
 
 ## Licence
 
