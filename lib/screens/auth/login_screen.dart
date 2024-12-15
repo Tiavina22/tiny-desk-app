@@ -12,7 +12,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: Text('Se connecter')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -20,24 +20,24 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: InputDecoration(labelText: 'Nom d\'utilisateur'),
             ),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Mot de passe'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Login'),
+              child: Text('Se connecter'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/signup');
               },
-              child: Text('Don\'t have an account? Sign Up'),
+              child: Text('Vous n\'avez pas encore un compte? S\'inscrire'),
             ),
           ],
         ),

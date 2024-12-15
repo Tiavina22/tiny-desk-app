@@ -20,12 +20,17 @@ class _SignupScreenState extends State<SignupScreen> {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: InputDecoration(labelText: 'Nom d\'utilisateur'),
             ),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Mot de passe'),
+            ),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Confirmation du mot de passe'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -35,9 +40,9 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Go back to the login page
+                Navigator.pop(context);
               },
-              child: Text('Already have an account? Login'),
+              child: Text('Vous avez déja un compte? Se connecter'),
             ),
           ],
         ),
