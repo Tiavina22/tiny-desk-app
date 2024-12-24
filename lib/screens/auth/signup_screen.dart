@@ -30,12 +30,12 @@ class _SignupScreenState extends State<SignupScreen> {
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Confirmation du mot de passe'),
+              decoration:
+                  InputDecoration(labelText: 'Confirmation du mot de passe'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               child: Text('Sign Up'),
             ),
             TextButton(

@@ -4,8 +4,8 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 
 ## Features principales :
 - [ ] **Authentification** :
-    * [ ] login
-    * [ ] inscription
+    * [ ] Login
+    * [ ] Inscription
     - Permet à l'utilisateur de créer un compte et de se connecter pour accéder à ses données personnelles.
     - Synchronisation des données entre plusieurs appareils via un serveur backend.
 

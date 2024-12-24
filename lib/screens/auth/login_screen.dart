@@ -14,10 +14,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.grey[900],
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 500),
             child: Form(
@@ -37,14 +37,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 30.0),
-                          child: Text(
-                            'Se connecter avec tinyDesk',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/logo_white.png',
+                                height: 100,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'Se connecter avec tinyDesk',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
                         ),
                         TextFormField(
@@ -105,13 +114,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               // Logique de connexion
                             }
                           },
-                          child: Text('Se connecter', style: TextStyle(fontSize: 16, color: Colors.white), ),
+                          child: Text('Se connecter', style: TextStyle(fontSize: 16, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            elevation: 5,
                           ),
                         ),
                         SizedBox(height: 16),
