@@ -47,7 +47,7 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
    - Clonez le projet depuis le repository :
 
      ```bash
-     git clone <lien-du-repository>
+     git clone https://github.com/Tiavina22/tiny-desk-app
      ```
 
    - Installez les dépendances Flutter :
