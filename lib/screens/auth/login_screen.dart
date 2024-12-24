@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 20),
                               Text(
-                                'Se connecter avec tinyDesk',
+                                'Se connecter avec tiny',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
