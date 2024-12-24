@@ -34,7 +34,7 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 
 - **Flutter/Dart** : Framework pour le développement de l'application desktop.
 - **SQLite** : Base de données locale pour le stockage des données en mode hors ligne.
-- **Node.js** : Backend pour gérer l'authentification, la synchronisation et la gestion des données.
+- **Node** : Backend pour gérer l'authentification, la synchronisation et la gestion des données.
 - **PostgreSQL** : Base de données pour le backend, utilisée pour l'authentification et la gestion des utilisateurs.
 
 ## Installation
