@@ -13,17 +13,23 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
+      print(response);
       return jsonDecode(response.body);
     } else {
       throw Exception('Echec de la connexion');
     }
   }
 
-  Future<Map<String, dynamic>> signup(String username, String password, String confirmation) async {
+  Future<Map<String, dynamic>> signup(
+      String username, String password, String confirmation) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password, 'confirmation': confirmation}),
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+        'confirmation': confirmation
+      }),
     );
 
     if (response.statusCode == 201) {

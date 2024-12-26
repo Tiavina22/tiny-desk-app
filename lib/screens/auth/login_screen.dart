@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,6 +11,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
+
+  void _login() async {
+    if(!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true; 
+    });
+
+    try{
+      final response = await _authService.login(_usernameController.text, _passwordController.text);
+
+      // Vérification du succès
+      if(response['message'] == "success"){
+        // On Navigue vers HomePage
+        print("Avant");
+        Navigator.pushReplacementNamed(context, '/home');
+        print("Apres");
+      }else{
+        // Un message d'erreur au cas ou error
+        _showErrorMessage(response['message'] ?? 'Echec de la connexion');
+      }
+    }catch(e){
+      _showErrorMessage('Erreur : ${e.toString()}');
+    }finally{
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorMessage(String message){
+    showDialog(context: context, builder: (context) => AlertDialog(title: Text('Erreur', style: TextStyle(color: Colors.red),), content: Text(message), actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text("Ok"))],));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 500),
+            constraints: const BoxConstraints(maxWidth: 500),
             child: Form(
               key: _formKey,
               child: SingleChildScrollView(
@@ -43,8 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'assets/images/logo_white.png',
                                 height: 100,
                               ),
-                              SizedBox(height: 20),
-                              Text(
+                              const SizedBox(height: 20),
+                              const Text(
                                 'Se connecter avec tiny',
                                 style: TextStyle(
                                   fontSize: 24,
@@ -58,8 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         TextFormField(
                           controller: _usernameController,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
                             labelText: 'Nom d\'utilisateur',
                             labelStyle: TextStyle(color: Colors.white),
                             border: OutlineInputBorder(),
@@ -75,16 +112,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             labelText: 'Mot de passe',
-                            labelStyle: TextStyle(color: Colors.white),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
+                            labelStyle: const TextStyle(color: Colors.white),
+                            border: const OutlineInputBorder(),
+                            focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white, width: 2),
                             ),
                             suffixIcon: IconButton(
@@ -98,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               },
                             ),
-                            prefixIcon: Icon(Icons.lock, color: Colors.white),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.white),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -107,14 +144,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              // Logique de connexion
-                            }
-                          },
-                          child: Text('Se connecter', style: TextStyle(fontSize: 16, color: Colors.white)),
+                          onPressed: _isLoading ? null : _login,
+                          child: _isLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text('Se connecter', style: TextStyle(fontSize: 16, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             padding: EdgeInsets.symmetric(vertical: 16),
@@ -124,12 +159,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             elevation: 5,
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/signup');
                           },
-                          child: Text(
+                          child: const Text(
                             'Vous n\'avez pas encore un compte? S\'inscrire',
                             style: TextStyle(color: Colors.white),
                           ),
