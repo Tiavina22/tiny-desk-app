@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final String baseUrl = 'http://localhost:8080';
@@ -13,11 +14,30 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      print(response);
-      return jsonDecode(response.body);
+      final data = jsonDecode(response.body);
+
+      // Sauvegarde du token localement
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('authToken', data['token']);
+
+      return data;
     } else {
-      throw Exception('Echec de la connexion');
+      final error = jsonDecode(response.body);
+      return {
+        'success': false,
+        'message': error['message'] ?? 'Erreur inconnue',
+      };
     }
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('authToken');
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('authToken');
   }
 
   Future<Map<String, dynamic>> signup(
