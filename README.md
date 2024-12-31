@@ -42,6 +42,10 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 1. **Prérequis**
    - Assurez-vous d'avoir installé Flutter et Dart sur votre machine.
    - Node.js et PostgreSQL doivent être installés pour la partie backend.
+   - Dependance pour la plateforme desktop : sqflite_common_ffi et sqflite :
+   ```bash
+      sudo apt install sqlite3 libsqlite3-dev
+   ```
 
 2. **Installation du projet**
    - Clonez le projet depuis le repository :
