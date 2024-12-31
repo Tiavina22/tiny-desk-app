@@ -51,59 +51,76 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: const Color(0xFF1E1E1E),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
+            constraints: const BoxConstraints(maxWidth: 400),
             child: Form(
               key: _formKey,
               child: SingleChildScrollView(
                 child: Card(
-                  color: Colors.grey[850],
-                  elevation: 8,
+                  color: const Color(0xFF2D2D2D),
+                  elevation: 12,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(32.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 30.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
+                        Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                              child: Image.asset(
                                 'assets/images/logo_white.png',
-                                height: 100,
+                                height: 80,
                               ),
-                              const SizedBox(height: 20),
-                              const Text(
-                                'Se connecter avec tiny',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                            const Text(
+                              'Bienvenue sur Tiny',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 0.5,
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Connectez-vous pour continuer',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 32),
+
                         TextFormField(
                           controller: _usernameController,
                           style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Nom d\'utilisateur',
-                            labelStyle: TextStyle(color: Colors.white),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white, width: 2),
+                            labelStyle: TextStyle(color: Colors.grey[400]),
+                            hintStyle: TextStyle(color: Colors.grey[600]),
+                            filled: true,
+                            fillColor: const Color(0xFF3D3D3D),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.person, color: Colors.white),
+                            prefixIcon: Icon(Icons.person, color: Colors.grey[400]),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -119,15 +136,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             labelText: 'Mot de passe',
-                            labelStyle: const TextStyle(color: Colors.white),
-                            border: const OutlineInputBorder(),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white, width: 2),
+                            labelStyle: TextStyle(color: Colors.grey[400]),
+                            hintStyle: TextStyle(color: Colors.grey[600]),
+                            filled: true,
+                            fillColor: const Color(0xFF3D3D3D),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
                             ),
+                            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                color: Colors.white,
+                                color: Colors.grey[400],
                               ),
                               onPressed: () {
                                 setState(() {
@@ -135,7 +156,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               },
                             ),
-                            prefixIcon: const Icon(Icons.lock, color: Colors.white),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -144,30 +164,59 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
+
                         ElevatedButton(
                           onPressed: _isLoading ? null : _login,
-                          child: _isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text('Se connecter', style: TextStyle(fontSize: 16, color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: Colors.blue[700],
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            elevation: 5,
+                            elevation: 0,
                           ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  'Se connecter',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
                         ),
-                        const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/signup');
-                          },
-                          child: const Text(
-                            'Vous n\'avez pas encore un compte? S\'inscrire',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                        const SizedBox(height: 20),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Pas encore de compte ?',
+                              style: TextStyle(color: Colors.grey[400]),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/signup');
+                              },
+                              child: const Text(
+                                'S\'inscrire',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

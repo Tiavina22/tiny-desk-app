@@ -37,10 +37,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.2.2
   shared_preferences: ^2.3.3
+  sqflite: ^2.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  sqflite_common_ffi:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

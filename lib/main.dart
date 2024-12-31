@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:tiny_desk/screens/auth/login_screen.dart';
-import 'package:tiny_desk/screens/auth/signup_screen.dart';
-import 'package:tiny_desk/screens/home/home_screen.dart';
-import 'package:tiny_desk/services/auth/auth_service.dart';
+import 'package:tiny_desk/services/database/database_service.dart';
+import 'screens/home/home_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'services/auth/auth_service.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (DatabaseService.instance.isDesktop) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
+  await DatabaseService.instance.database; 
   runApp(MyApp());
 }
 
-Future<void> checkLoginStatus(BuildContext context) async {
-  final token = await AuthService().getToken();
-  print(token);
-  if (token != null) {
-    Navigator.pushReplacementNamed(
-        context, '/home');
-  } else {
-    Navigator.pushReplacementNamed(
-        context, '/'); 
-  }
-}
-
 class MyApp extends StatelessWidget {
+  final AuthService _authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tiny',
-      initialRoute: '/',
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (context) {
-        checkLoginStatus(context);
-        return Container(); // Temporary widget while checking login status
-          },
-        );
-      },
-      routes: {
-        '/': (context) => LoginScreen(),
-        '/signup': (context) => SignupScreen(),
-        '/home': (context) => HomeScreen()
-      },
+      title: 'Mon Application',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: FutureBuilder<String?>(
+        future: _authService.getToken(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          // Si on a un token, on va vers HomeScreen, sinon LoginScreen
+          if (snapshot.hasData && snapshot.data != null) {
+            return HomeScreen();
+          }
+          return LoginScreen();
+        },
+      ),
     );
   }
 }

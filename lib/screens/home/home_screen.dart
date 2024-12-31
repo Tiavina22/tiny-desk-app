@@ -6,27 +6,61 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Screen'),
+        title: Text('Tiny Desk'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
+        ],
       ),
-      body: Center(
+      body: GridView.count(
+        padding: EdgeInsets.all(16),
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        children: [
+          _buildMenuCard(
+            context,
+            'Commandes',
+            Icons.terminal,
+            () => Navigator.pushNamed(context, '/commands'),
+          ),
+          _buildMenuCard(
+            context,
+            'Notes',
+            Icons.note,
+            () => Navigator.pushNamed(context, '/notes'),
+          ),
+          _buildMenuCard(
+            context,
+            'Codes',
+            Icons.code,
+            () => Navigator.pushNamed(context, '/codes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return Card(
+      elevation: 4,
+      child: InkWell(
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FutureBuilder(
-              future: AuthService().getToken(),
-              builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return Text('Welcome to the Home Screen!, token = ${snapshot.data}');
-              }
-              },
-            ),
-            ElevatedButton(
-              onPressed: () => _logout(context),
-              child: Text('Logout'),
+            Icon(icon, size: 48),
+            SizedBox(height: 16),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
         ),
@@ -34,12 +68,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _getToken() async {
-    await AuthService().getToken();
-  }
-
   void _logout(BuildContext context) async {
     await AuthService().logout();
-    Navigator.pushReplacementNamed(context, '/login'); // Retourne à la page de connexion
+    Navigator.pushReplacementNamed(context, '/login');
   }
 }
