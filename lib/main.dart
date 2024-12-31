@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tiny_desk/screens/auth/signup_screen.dart';
+import 'package:tiny_desk/screens/code/code_screen.dart';
+import 'package:tiny_desk/screens/command/command_screen.dart';
+import 'package:tiny_desk/screens/note/note_screen.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -23,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Mon Application',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -38,13 +43,20 @@ class MyApp extends StatelessWidget {
             );
           }
 
-          // Si on a un token, on va vers HomeScreen, sinon LoginScreen
           if (snapshot.hasData && snapshot.data != null) {
             return HomeScreen();
           }
           return LoginScreen();
         },
       ),
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/commands': (context) => CommandScreen(),
+        '/home': (context) => HomeScreen(),
+        '/notes': (context) => NoteScreen(),
+        '/codes': (context) => CodeScreen(),
+        '/signup': (context) => SignupScreen(),
+      },
     );
   }
 }

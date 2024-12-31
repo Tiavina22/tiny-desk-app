@@ -39,18 +39,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white.withOpacity(0.1),
-                              ),
-                              child: Image.asset(
+                          children: [Image.asset(
                                 'assets/images/logo_white.png',
                                 height: 80,
                               ),
-                            ),
+                            
                             const SizedBox(height: 24),
                             const Text(
                               'Créer un compte',
