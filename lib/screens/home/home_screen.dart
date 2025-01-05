@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tiny_desk/main.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 import 'package:tiny_desk/services/user/user_service.dart';
+import 'package:tiny_desk/screens/settings/settings_screen.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,11 +12,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userInfo;
+  bool _isDarkMode = true; // Valeur initiale (peut être modifiée selon la préférence de l'utilisateur)
 
   @override
   void initState() {
     super.initState();
     _fetchUserInfo();
+    _loadTheme();
   }
 
   Future<void> _fetchUserInfo() async {
@@ -23,11 +28,42 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Charger le thème préféré de l'utilisateur
+  _loadTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? themeIndex = prefs.getInt('themeMode');
+    setState(() {
+      _isDarkMode = themeIndex != null && themeIndex == 0;
+    });
+  }
+
+  // Sauvegarder la préférence de thème
+  _saveTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('themeMode', value ? 0 : 1); // 0 pour sombre, 1 pour clair
+    // Appliquer immédiatement le changement de thème
+    setState(() {
+      _isDarkMode = value;
+    });
+    runApp(MyApp(themeMode: value ? ThemeMode.dark : ThemeMode.light));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tiny Desk'),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.0), 
+            child: Switch(
+              value: _isDarkMode,
+              onChanged: (value) {
+                _saveTheme(value);
+              },
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -39,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               accountEmail: Text(
-                'email@example.com', // Ajoute l'email si disponible dans _userInfo
+                'email@example.com',
                 style: TextStyle(color: Colors.white70),
               ),
               currentAccountPicture: CircleAvatar(
@@ -66,6 +102,15 @@ class _HomeScreenState extends State<HomeScreen> {
               () => Navigator.pushNamed(context, '/codes'),
             ),
             Divider(),
+            _buildDrawerItem(
+              context,
+              'Paramètres',
+              Icons.settings,
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              ),
+            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Se déconnecter'),
