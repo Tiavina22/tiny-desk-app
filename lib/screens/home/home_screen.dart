@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiny_desk/main.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
+import 'package:tiny_desk/services/database/database_service.dart';
 import 'package:tiny_desk/services/user/user_service.dart';
-import 'package:tiny_desk/screens/settings/settings_screen.dart'; 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiny_desk/screens/settings/settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,7 +14,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userInfo;
-  bool _isDarkMode = true; // Valeur initiale (peut être modifiée selon la préférence de l'utilisateur)
+  bool _isDarkMode = true;
+
+  final _formKey = GlobalKey<FormState>();
+  String _title = '';
+  String? _description;
+  String _content = '';
+  String _formSelectedType = 'Command';
 
   @override
   void initState() {
@@ -28,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Charger le thème préféré de l'utilisateur
   _loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? themeIndex = prefs.getInt('themeMode');
@@ -37,15 +44,79 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Sauvegarder la préférence de thème
   _saveTheme(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('themeMode', value ? 0 : 1); // 0 pour sombre, 1 pour clair
-    // Appliquer immédiatement le changement de thème
+    prefs.setInt('themeMode', value ? 0 : 1);
     setState(() {
       _isDarkMode = value;
     });
     runApp(MyApp(themeMode: value ? ThemeMode.dark : ThemeMode.light));
+  }
+
+  Future<void> _saveData() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final db = await DatabaseService.instance.database;
+
+      switch (_formSelectedType) {
+        case 'Command':
+          await db.insert('commands', {
+            'title': _title,
+            'description': _description,
+            'command': _content,
+            'user_id': _userInfo?['id'] ?? 1,
+          });
+          break;
+
+        case 'Note':
+          await db.insert('notes', {
+            'title': _title,
+            'description': _description,
+            'note': _content,
+            'user_id': _userInfo?['id'] ?? 1,
+          });
+          break;
+
+        case 'Code':
+          await db.insert('codes', {
+            'title': _title,
+            'description': _description,
+            'code': _content,
+            'user_id': _userInfo?['id'] ?? 1,
+          });
+          break;
+      }
+
+      // Réinitialiser le formulaire après la sauvegarde
+      _formKey.currentState!.reset();
+      setState(() {
+        _formSelectedType = 'Command'; // Réinitialiser le type du formulaire
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Donnée enregistrée avec succès!')),
+      );
+
+      Navigator.of(context).pop(); // Ferme le Dialog après l'enregistrement
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchItems() async {
+    final db = await DatabaseService.instance.database;
+    
+    // Récupérer toutes les entrées des trois tables
+    List<Map<String, dynamic>> commands = await db.query('commands');
+    List<Map<String, dynamic>> notes = await db.query('notes');
+    List<Map<String, dynamic>> codes = await db.query('codes');
+
+    // Combiner toutes les listes dans une seule
+    List<Map<String, dynamic>> allItems = [];
+    allItems.addAll(commands);
+    allItems.addAll(notes);
+    allItems.addAll(codes);
+
+    return allItems;
   }
 
   @override
@@ -55,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Tiny Desk'),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0), 
+            padding: EdgeInsets.only(right: 16.0),
             child: Switch(
               value: _isDarkMode,
               onChanged: (value) {
@@ -119,14 +190,143 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Center(
-        child: Text(
-          _userInfo != null
-              ? 'Bienvenue, ${_userInfo!['username']}'
-              : 'Chargement des données utilisateur...',
-          style: TextStyle(fontSize: 18),
-        ),
+      body: Column(
+        children: [
+          // Bouton pour ouvrir le formulaire d'ajout
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                _showAddFormDialog(context);
+              },
+              child: Text('Ajouter une entrée'),
+            ),
+          ),
+          Divider(),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _fetchItems(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('Aucune donnée disponible.'));
+                }
+
+                final items = snapshot.data!;
+
+                // Calcul du nombre de colonnes en fonction de la largeur de l'écran
+                double screenWidth = MediaQuery.of(context).size.width;
+                int crossAxisCount = screenWidth > 1200
+                    ? 10
+                    : screenWidth > 800
+                        ? 6
+                        : 3;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: MasonryGridView.count(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return Container(
+                        constraints: BoxConstraints(
+                          maxHeight: 250,
+                        ),
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          child: ListTile(
+                            title: Text(
+                              item['title'],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              item['description'] ?? 'Aucune description',
+                              maxLines: 3, // Limite à 3 lignes
+                              overflow: TextOverflow.ellipsis, // Tronque le texte si trop long
+                            ),
+                            trailing: Icon(Icons.arrow_forward),
+                            onTap: () {
+                              // Logique pour ouvrir une vue détaillée
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  // Méthode pour afficher le Dialog
+  void _showAddFormDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ajouter une entrée'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Titre'),
+                    onSaved: (value) => _title = value!,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Veuillez entrer un titre'
+                        : null,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Description'),
+                    onSaved: (value) => _description = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Contenu'),
+                    onSaved: (value) => _content = value!,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Veuillez entrer un contenu'
+                        : null,
+                  ),
+                  SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    value: _formSelectedType,
+                    decoration: InputDecoration(labelText: 'Type'),
+                    items: ['Command', 'Note', 'Code']
+                        .map((type) => DropdownMenuItem(
+                              value: type,
+                              child: Text(type),
+                            ))
+                        .toList(),
+                    onChanged: (value) => setState(() {
+                      _formSelectedType = value!;
+                    }),
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: _saveData,
+              child: Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
     );
   }
 
