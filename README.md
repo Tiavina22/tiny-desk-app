@@ -5,14 +5,14 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 ## Features principales :
 - [ ] **Authentification** :
     * [X] Login
-    * [ ] Inscription
+    * [X] Inscription
     - Permet à l'utilisateur de créer un compte et de se connecter pour accéder à ses données personnelles.
     - Synchronisation des données entre plusieurs appareils via un serveur backend.
 
 - [ ] **Ajout d'éléments** :
-    * [ ] Commandes : Ajouter des commandes avec un titre, une description et la commande elle-même (peut être une ou plusieurs commandes).
-    * [ ] Codes : Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.
-    * [ ] Notes : Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.
+    * [X] Commandes : Ajouter des commandes avec un titre, une description et la commande elle-même (peut être une ou plusieurs commandes).
+    * [X] Codes : Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.
+    * [X] Notes : Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.
 
 - [ ] **Catégories** :
     * [ ] Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
