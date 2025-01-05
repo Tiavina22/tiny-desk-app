@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tiny_desk/screens/auth/login_screen.dart';
+import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -13,6 +15,70 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
+
+  Future<void> _showSuccessDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // Empêche de fermer le dialog en cliquant à l'extérieur
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF2D2D2D),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            'Inscription Réussie !',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 80,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Merci pour votre inscription à Tiny Desk ! Vous pouvez maintenant vous connecter et explorer nos fonctionnalités.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white70, fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[700],
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Aller à la Connexion',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +105,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Column(
-                          children: [Image.asset(
-                                'assets/images/logo_white.png',
-                                height: 80,
-                              ),
-                            
+                          children: [
+                            Image.asset(
+                              'assets/images/logo_white.png',
+                              height: 80,
+                            ),
                             const SizedBox(height: 24),
                             const Text(
                               'Créer un compte',
@@ -65,7 +131,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
-
                         TextFormField(
                           controller: _usernameController,
                           style: const TextStyle(color: Colors.white),
@@ -79,7 +144,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.person, color: Colors.grey[400]),
+                            prefixIcon:
+                                Icon(Icons.person, color: Colors.grey[400]),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -89,7 +155,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-
                         TextFormField(
                           controller: _passwordController,
                           style: const TextStyle(color: Colors.white),
@@ -104,10 +169,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey[400]),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.grey[400],
                               ),
                               onPressed: () {
@@ -125,13 +193,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-
                         TextFormField(
                           controller: _confirmPasswordController,
                           style: const TextStyle(color: Colors.white),
                           obscureText: _obscureConfirmPassword,
                           decoration: InputDecoration(
-                            labelText: 'Confirmation du mot de passe',
+                            labelText: 'Confirmation',
                             labelStyle: TextStyle(color: Colors.grey[400]),
                             hintStyle: TextStyle(color: Colors.grey[600]),
                             filled: true,
@@ -140,15 +207,19 @@ class _SignupScreenState extends State<SignupScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey[400]),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                _obscureConfirmPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.grey[400],
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                  _obscureConfirmPassword =
+                                      !_obscureConfirmPassword;
                                 });
                               },
                             ),
@@ -164,13 +235,52 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                         const SizedBox(height: 24),
-
                         ElevatedButton(
                           onPressed: _isLoading
                               ? null
-                              : () {
-                                  if (_formKey.currentState?.validate() ?? false) {
-                                    // Logique de l'inscription
+                              : () async {
+                                  if (_formKey.currentState?.validate() ??
+                                      false) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+
+                                    try {
+                                      final response =
+                                          await _authService.signup(
+                                        _usernameController.text,
+                                        _passwordController.text,
+                                        _confirmPasswordController.text,
+                                      );
+
+                                      if (response['message'] ==
+                                          "Utilisateurs inscrit avec succes") {
+                                        // Afficher le dialog de succès
+                                        await _showSuccessDialog();
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(response['message'] ??
+                                                'Erreur lors de l\'inscription.'),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              'Une erreur est survenue : $e'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    } finally {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
@@ -201,7 +311,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                         ),
                         const SizedBox(height: 20),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
