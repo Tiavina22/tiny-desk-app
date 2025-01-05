@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userInfo;
   bool _isDarkMode = true;
-
+  String _searchQuery = ''; // State for search query
   final _formKey = GlobalKey<FormState>();
   String _title = '';
   String? _description;
@@ -116,7 +116,65 @@ class _HomeScreenState extends State<HomeScreen> {
     allItems.addAll(notes);
     allItems.addAll(codes);
 
+    // Filter items based on search query
+    if (_searchQuery.isNotEmpty) {
+      allItems = allItems.where((item) {
+        return item['title'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
+               (item['description'] != null && item['description']!.toLowerCase().contains(_searchQuery.toLowerCase()));
+      }).toList();
+    }
+
     return allItems;
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 500,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: _isDarkMode ? const Color.fromARGB(80, 41, 41, 41) : Colors.grey[200],
+            ),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.search,
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    onChanged: (query) {
+                      setState(() {
+                        _searchQuery = query; // Mettre à jour la requête de recherche
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Recherche...',
+                      hintStyle: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      filled: false,
+                    ),
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -125,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Tiny Desk'),
         actions: [
+          // Dark Mode Switch
           Padding(
             padding: EdgeInsets.only(right: 16.0),
             child: Switch(
@@ -135,6 +194,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: _buildSearchBar(),
+        ),
       ),
       drawer: Drawer(
         child: ListView(
