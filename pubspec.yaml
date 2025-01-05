@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.3.3
   sqflite: ^2.3.0
   path: ^1.8.3
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:

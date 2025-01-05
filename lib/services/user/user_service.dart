@@ -1,18 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tiny_desk/core/config/config.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class UserService {
-  final String _baseUrl = 'http://localhost:8080';
+  final String baseUrl = BASE_URL ?? 'http://localhost:8080';
 
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
       final token = await AuthService().getToken();
 
       print(token); 
-      
+
       final response = await http.get(
-        Uri.parse('$_baseUrl/user/user-info'),
+        Uri.parse('$baseUrl/user/user-info'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

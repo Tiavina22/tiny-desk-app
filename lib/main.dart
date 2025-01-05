@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tiny_desk/screens/auth/signup_screen.dart';
 import 'package:tiny_desk/screens/code/code_screen.dart';
 import 'package:tiny_desk/screens/command/command_screen.dart';
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
   if (DatabaseService.instance.isDesktop) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -24,6 +26,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final themeModeIndex = prefs.getInt('themeMode') ?? 0; // 0 = Dark, 1 = Light
   final themeMode = themeModeIndex == 0 ? ThemeMode.dark : ThemeMode.light;
+
 
   runApp(MyApp(themeMode: themeMode));
 }

@@ -48,3 +48,6 @@ web/
 macos
 
 note.txt
+
+#Env
+*.env

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiny_desk/core/config/config.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:8080';
+  final String baseUrl = BASE_URL ?? 'http://localhost:8080';
 
   // Login service
   Future<Map<String, dynamic>> login(String username, String password) async {
