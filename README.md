@@ -17,14 +17,14 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 - [ ] **Catégories** :
     * [ ] Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
 
-- [ ] **Recherche**
+- [X] **Recherche**
   - Permet à l'utilisateur de rechercher des commandes, des extraits de code ou des notes par titre ou description.
 
-- [ ] **Configuration**
+- [X] **Configuration**
   - Mode sombre et mode clair pour personnaliser l'interface.
   - Option de synchronisation automatique des données lorsque la connexion est rétablie, ou synchronisation manuelle.
 
-- [ ] **Déconnexion (Logout)**
+- [X] **Déconnexion (Logout)**
   - Permet à l'utilisateur de se déconnecter de son compte.
 
 - [ ] **Synchronisation en ligne**
