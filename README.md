@@ -30,7 +30,8 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 | **Catégories**                    | Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.                                |
 | **Synchronisation en ligne**      | La synchronisation des données avec un serveur en ligne est activée pour la sauvegarde des données et l'accès depuis différents appareils.         |
 
-
+## Plus de features
+Pour le moment, je n'ai pas d'idées précises, mais cela viendra dans le futur.
 
 ## Technologies utilisées
 
