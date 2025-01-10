@@ -6,6 +6,8 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 - [ ] Refactoriser le code
 - [ ] Mettre le code en clean
 ## Features principales :
+
+** Done :
 - [X] **Authentification** :
     * [X] Login
     * [X] Inscription
@@ -17,9 +19,6 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
     * [X] Codes : Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.
     * [X] Notes : Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.
 
-- [ ] **Catégories** :
-    * [ ] Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
-
 - [X] **Recherche**
   - Permet à l'utilisateur de rechercher des commandes, des extraits de code ou des notes par titre ou description.
 
@@ -29,6 +28,10 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 
 - [X] **Déconnexion (Logout)**
   - Permet à l'utilisateur de se déconnecter de son compte.
+
+** not completed
+- [ ] **Catégories** :
+    * [ ] Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.
 
 - [ ] **Synchronisation en ligne**
   - La synchronisation des données avec un serveur en ligne est activée pour la sauvegarde des données et l'accès depuis différents appareils.
