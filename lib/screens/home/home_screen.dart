@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<List<Map<String, dynamic>>> _fetchItems() async {
     final db = await DatabaseService.instance.database;
-    
+
     // Récupérer toutes les entrées des trois tables
     List<Map<String, dynamic>> commands = await db.query('commands');
     List<Map<String, dynamic>> notes = await db.query('notes');
@@ -119,8 +119,13 @@ class _HomeScreenState extends State<HomeScreen> {
     // Filter items based on search query
     if (_searchQuery.isNotEmpty) {
       allItems = allItems.where((item) {
-        return item['title'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               (item['description'] != null && item['description']!.toLowerCase().contains(_searchQuery.toLowerCase()));
+        return item['title']
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()) ||
+            (item['description'] != null &&
+                item['description']!
+                    .toLowerCase()
+                    .contains(_searchQuery.toLowerCase()));
       }).toList();
     }
 
@@ -138,7 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 500,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
-              color: _isDarkMode ? const Color.fromARGB(80, 41, 41, 41) : Colors.grey[200],
+              color: _isDarkMode
+                  ? const Color.fromARGB(80, 41, 41, 41)
+                  : Colors.grey[200],
             ),
             child: Row(
               children: [
@@ -153,7 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: TextField(
                     onChanged: (query) {
                       setState(() {
-                        _searchQuery = query; // Mettre à jour la requête de recherche
+                        _searchQuery =
+                            query; // Mettre à jour la requête de recherche
                       });
                     },
                     decoration: InputDecoration(
@@ -297,27 +305,82 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       final item = items[index];
-                      return Container(
-                        constraints: BoxConstraints(
-                          maxHeight: 250,
-                        ),
+                      String itemType = item.containsKey('command')
+                          ? 'Command'
+                          : item.containsKey('note')
+                              ? 'Note'
+                              : 'Code';
+                      Color circleColor;
+                      switch (itemType) {
+                        case 'Command':
+                          circleColor = Colors.red;
+                          break;
+                        case 'Note':
+                          circleColor = Colors.green;
+                          break;
+                        case 'Code':
+                          circleColor = Colors.yellow;
+                          break;
+                        default:
+                          circleColor = Colors.grey;
+                      }
+
+                      return SizedBox(
+                        width: 250, // Fixe la largeur à 150 pixels
                         child: Card(
-                          margin: EdgeInsets.zero,
-                          child: ListTile(
-                            title: Text(
-                              item['title'],
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          margin: const EdgeInsets.all(0.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 4.0,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize
+                                  .min, // Hauteur minimale basée sur le contenu
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 6,
+                                      backgroundColor: circleColor,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Expanded(
+                                      child: Text(
+                                        item['title'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  item['description'] ?? 'Aucune description',
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                const SizedBox(
+                                    height: 12.0), // Espacement avant l'icône
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
-                            subtitle: Text(
-                              item['description'] ?? 'Aucune description',
-                              maxLines: 3, // Limite à 3 lignes
-                              overflow: TextOverflow.ellipsis, // Tronque le texte si trop long
-                            ),
-                            trailing: Icon(Icons.arrow_forward),
-                            onTap: () {
-                              // Logique pour ouvrir une vue détaillée
-                            },
                           ),
                         ),
                       );
@@ -340,62 +403,61 @@ class _HomeScreenState extends State<HomeScreen> {
         return AlertDialog(
           title: Text('Ajouter une entrée'),
           content: SizedBox(
-          width: 500, // Fixe la largeur à 500 pixels
-          child:   
-           SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Titre'),
-                    onSaved: (value) => _title = value!,
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Veuillez entrer un titre'
-                        : null,
+              width: 500, // Fixe la largeur à 500 pixels
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Titre'),
+                        onSaved: (value) => _title = value!,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Veuillez entrer un titre'
+                            : null,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Description'),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        onSaved: (value) => _description = value,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Contenu'),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        onSaved: (value) => _content = value!,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Veuillez entrer un contenu'
+                            : null,
+                      ),
+                      SizedBox(height: 10),
+                      DropdownButtonFormField<String>(
+                        value: _formSelectedType,
+                        decoration: InputDecoration(labelText: 'Type'),
+                        items: ['Command', 'Note', 'Code']
+                            .map((type) => DropdownMenuItem(
+                                  value: type,
+                                  child: Text(type),
+                                ))
+                            .toList(),
+                        onChanged: (value) => setState(() {
+                          _formSelectedType = value!;
+                        }),
+                      ),
+                      SizedBox(height: 10),
+                    ],
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Description'),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null, 
-                    onSaved: (value) => _description = value,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Contenu'),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null, 
-                    onSaved: (value) => _content = value!,
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Veuillez entrer un contenu'
-                        : null,
-                  ),
-                  SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    value: _formSelectedType,
-                    decoration: InputDecoration(labelText: 'Type'),
-                    items: ['Command', 'Note', 'Code']
-                        .map((type) => DropdownMenuItem(
-                              value: type,
-                              child: Text(type),
-                            ))
-                        .toList(),
-                    onChanged: (value) => setState(() {
-                      _formSelectedType = value!;
-                    }),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-            ),
-          )),
+                ),
+              )),
           actions: [
             ElevatedButton(
               onPressed: _saveData,
               child: Text('Enregistrer'),
             ),
           ],
-          );
+        );
       },
     );
   }
