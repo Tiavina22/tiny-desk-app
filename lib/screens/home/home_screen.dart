@@ -341,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           },
                           child: SizedBox(
-                            width: 250, // Fixe la largeur à 150 pixels
+                            width: 300, // Fixe la largeur à 150 pixels
                             child: Card(
                               margin: const EdgeInsets.all(0.0),
                               shape: RoundedRectangleBorder(
@@ -379,23 +379,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Text(
                                       item['description'] ??
                                           'Aucune description',
-                                      maxLines: 3,
+                                      maxLines: 5,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         color: Colors.grey[700],
                                       ),
                                     ),
-                                    const SizedBox(
-                                        height:
-                                            12.0), // Espacement avant l'icône
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Icon(
-                                        Icons.arrow_forward,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
+                                    // const SizedBox(
+                                    //     height:
+                                    //         12.0), // Espacement avant l'icône
+                                    // Align(
+                                    //   alignment: Alignment.bottomRight,
+                                    //   child: Icon(
+                                    //     Icons.arrow_forward,
+                                    //     color: Colors.grey[600],
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
