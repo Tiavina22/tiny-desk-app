@@ -339,7 +339,10 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Ajouter une entrée'),
-          content: SingleChildScrollView(
+          content: SizedBox(
+          width: 500, // Fixe la largeur à 500 pixels
+          child:   
+           SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
@@ -354,10 +357,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Description'),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null, 
                     onSaved: (value) => _description = value,
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Contenu'),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null, 
                     onSaved: (value) => _content = value!,
                     validator: (value) => value == null || value.isEmpty
                         ? 'Veuillez entrer un contenu'
@@ -381,14 +388,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-          ),
+          )),
           actions: [
             ElevatedButton(
               onPressed: _saveData,
               child: Text('Enregistrer'),
             ),
           ],
-        );
+          );
       },
     );
   }
