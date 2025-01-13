@@ -341,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           },
                           child: SizedBox(
-                            width: 300, // Fixe la largeur à 150 pixels
+                            width: 250, // Fixe la largeur à 150 pixels
                             child: Card(
                               margin: const EdgeInsets.all(0.0),
                               shape: RoundedRectangleBorder(
