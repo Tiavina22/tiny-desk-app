@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiny_desk/main.dart';
+import 'package:tiny_desk/screens/details/details_screen.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
 import 'package:tiny_desk/services/user/user_service.dart';
@@ -325,65 +326,81 @@ class _HomeScreenState extends State<HomeScreen> {
                           circleColor = Colors.grey;
                       }
 
-                      return SizedBox(
-                        width: 250, // Fixe la largeur à 150 pixels
-                        child: Card(
-                          margin: const EdgeInsets.all(0.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          elevation: 4.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize
-                                  .min, // Hauteur minimale basée sur le contenu
-                              children: [
-                                Row(
+                      return GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailScreen(item: item),
+                              ),
+                            );
+
+                            // Si des modifications ont été apportées, mettez à jour l'état
+                            if (result == true) {
+                              setState(() {});
+                            }
+                          },
+                          child: SizedBox(
+                            width: 250, // Fixe la largeur à 150 pixels
+                            child: Card(
+                              margin: const EdgeInsets.all(0.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              elevation: 4.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize
+                                      .min, // Hauteur minimale basée sur le contenu
                                   children: [
-                                    CircleAvatar(
-                                      radius: 6,
-                                      backgroundColor: circleColor,
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Expanded(
-                                      child: Text(
-                                        item['title'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 6,
+                                          backgroundColor: circleColor,
                                         ),
+                                        const SizedBox(width: 8.0),
+                                        Expanded(
+                                          child: Text(
+                                            item['title'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      item['description'] ??
+                                          'Aucune description',
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        height:
+                                            12.0), // Espacement avant l'icône
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.grey[600],
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8.0),
-                                Text(
-                                  item['description'] ?? 'Aucune description',
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                const SizedBox(
-                                    height: 12.0), // Espacement avant l'icône
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      );
+                          ));
                     },
                   ),
                 );
