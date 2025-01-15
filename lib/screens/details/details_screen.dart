@@ -84,9 +84,6 @@ class _DetailScreenState extends State<DetailScreen> {
         duration: Duration(seconds: 1),
       ),
     );
-
-    // Renvoyer un résultat pour indiquer que des modifications ont été apportées
-    Navigator.pop(context, true);
   }
 
   @override
