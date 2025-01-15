@@ -422,70 +422,113 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
 
   // Méthode pour afficher le Dialog
   void _showAddFormDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Ajouter une entrée'),
-          content: SizedBox(
-              width: 500, // Fixe la largeur à 500 pixels
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Titre'),
-                        onSaved: (value) => _title = value!,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer un titre'
-                            : null,
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          'Ajouter une entrée',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        content: SizedBox(
+          width: 500, // Fixe la largeur à 500 pixels
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Champ Titre
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Titre',
+                      hintStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[600],
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Description'),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        onSaved: (value) => _description = value,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Contenu'),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        onSaved: (value) => _content = value!,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer un contenu'
-                            : null,
-                      ),
-                      SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _formSelectedType,
-                        decoration: InputDecoration(labelText: 'Type'),
-                        items: ['Command', 'Note', 'Code']
-                            .map((type) => DropdownMenuItem(
-                                  value: type,
-                                  child: Text(type),
-                                ))
-                            .toList(),
-                        onChanged: (value) => setState(() {
-                          _formSelectedType = value!;
-                        }),
-                      ),
-                      SizedBox(height: 10),
-                    ],
+                      border: InputBorder.none,
+                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    onSaved: (value) => _title = value!,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Veuillez entrer un titre' : null,
                   ),
-                ),
-              )),
-          actions: [
-            ElevatedButton(
-              onPressed: _saveData,
-              child: Text('Enregistrer'),
+                  SizedBox(height: 15),
+
+                  // Champ Description
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Description (facultatif)',
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    maxLines: null,
+                    style: TextStyle(fontSize: 16),
+                    onSaved: (value) => _description = value,
+                  ),
+                  SizedBox(height: 15),
+
+                  // Champ Contenu
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Contenu',
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    style: TextStyle(fontSize: 16),
+                    onSaved: (value) => _content = value!,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Veuillez entrer un contenu' : null,
+                  ),
+                  SizedBox(height: 20),
+
+                  // Sélection du Type
+                  DropdownButtonFormField<String>(
+                    value: _formSelectedType,
+                    decoration: InputDecoration(
+                      labelText: 'Type',
+                      labelStyle: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: ['Command', 'Note', 'Code']
+                        .map((type) => DropdownMenuItem(
+                              value: type,
+                              child: Text(type),
+                            ))
+                        .toList(),
+                    onChanged: (value) => setState(() {
+                      _formSelectedType = value!;
+                    }),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: _saveData,
+            child: Text('Enregistrer'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   Widget _buildDrawerItem(
     BuildContext context,
