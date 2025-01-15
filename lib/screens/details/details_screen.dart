@@ -66,24 +66,48 @@ class _DetailScreenState extends State<DetailScreen> {
       contentColumn = 'code';
     }
 
-    await db.update(
-      tableName,
-      {
-        'title': _titleController.text,
-        'description': _descriptionController.text,
-        contentColumn: _contentController.text,
-      },
-      where: 'id = ?',
-      whereArgs: [widget.item['id']],
-    );
+    // Vérifie si tous les champs sont vides
+    if (_titleController.text.isEmpty &&
+        _descriptionController.text.isEmpty &&
+        _contentController.text.isEmpty) {
+      // Supprime l'élément de la base de données
+      await db.delete(
+        tableName,
+        where: 'id = ?',
+        whereArgs: [widget.item['id']],
+      );
 
-    // Affiche un feedback discret
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Modifications sauvegardées automatiquement!'),
-        duration: Duration(seconds: 1),
-      ),
-    );
+      // Affiche un feedback discret
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Élément supprimé car tous les champs étaient vides.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Retourne à l'écran précédent avec un résultat indiquant que l'élément a été supprimé
+      Navigator.pop(context, true);
+    } else {
+      // Met à jour l'élément dans la base de données
+      await db.update(
+        tableName,
+        {
+          'title': _titleController.text,
+          'description': _descriptionController.text,
+          contentColumn: _contentController.text,
+        },
+        where: 'id = ?',
+        whereArgs: [widget.item['id']],
+      );
+
+      // Affiche un feedback discret
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Modifications sauvegardées automatiquement!'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   @override
