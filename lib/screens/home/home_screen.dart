@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware{
   Map<String, dynamic>? _userInfo;
   bool _isDarkMode = true;
   String _searchQuery = ''; // State for search query
@@ -22,6 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _description;
   String _content = '';
   String _formSelectedType = 'Command';
+
+  
+
+   @override
+  void didPopNext() {
+    // Rafraîchir les données lorsque l'utilisateur revient à cet écran
+    setState(() {});
+  }
 
   @override
   void initState() {

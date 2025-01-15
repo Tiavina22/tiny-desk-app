@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
 
@@ -14,6 +15,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _contentController;
+  Timer? _saveTimer;
 
   @override
   void initState() {
@@ -24,6 +26,27 @@ class _DetailScreenState extends State<DetailScreen> {
         text: widget.item['command'] ??
             widget.item['note'] ??
             widget.item['code']);
+
+    _titleController.addListener(_onTextChanged);
+    _descriptionController.addListener(_onTextChanged);
+    _contentController.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    _saveTimer?.cancel();
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    // Redémarre le timer chaque fois qu'il y a une modification
+    _saveTimer?.cancel();
+    _saveTimer = Timer(Duration(seconds: 2), () {
+      _saveChanges(); // Sauvegarde automatique après 2 secondes d'inactivité
+    });
   }
 
   Future<void> _saveChanges() async {
@@ -54,41 +77,70 @@ class _DetailScreenState extends State<DetailScreen> {
       whereArgs: [widget.item['id']],
     );
 
+    // Affiche un feedback discret
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Modifications enregistrées avec succès!')),
+      SnackBar(
+        content: Text('Modifications sauvegardées automatiquement!'),
+        duration: Duration(seconds: 1),
+      ),
     );
 
-    Navigator.of(context).pop(true);
+    // Renvoyer un résultat pour indiquer que des modifications ont été apportées
+    Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Détails'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.blue), // Icône personnalisée
+          onPressed: () {
+            Navigator.pop(context, true); // Retour personnalisé avec un résultat
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveChanges, // Bouton manuel pour sauvegarder
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
+              TextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Titre'),
+                style: Theme.of(context).textTheme.headlineSmall,
+                decoration: InputDecoration(
+                  hintText: 'Titre',
+                  border: InputBorder.none,
+                ),
               ),
-              TextFormField(
+              SizedBox(height: 8.0),
+              TextField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  hintText: 'Description',
+                  border: InputBorder.none,
+                ),
               ),
-              TextFormField(
+              Divider(height: 32.0, thickness: 1.0),
+              TextField(
                 controller: _contentController,
-                decoration: InputDecoration(labelText: 'Contenu'),
-                maxLines: 5,
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _saveChanges,
-                child: Text('Enregistrer les modifications'),
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: 'Ajoutez du contenu ici...',
+                  border: InputBorder.none,
+                ),
               ),
             ],
           ),
