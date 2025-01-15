@@ -112,34 +112,34 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
   }
 
   Future<List<Map<String, dynamic>>> _fetchItems() async {
-    final db = await DatabaseService.instance.database;
+  final db = await DatabaseService.instance.database;
 
-    // Récupérer toutes les entrées des trois tables
-    List<Map<String, dynamic>> commands = await db.query('commands');
-    List<Map<String, dynamic>> notes = await db.query('notes');
-    List<Map<String, dynamic>> codes = await db.query('codes');
+  // Récupérer les entrées des trois tables pour l'utilisateur connecté
+  List<Map<String, dynamic>> commands = await db.query('commands', where: 'user_id = ?', whereArgs: [_userInfo?['id']]);
+  List<Map<String, dynamic>> notes = await db.query('notes', where: 'user_id = ?', whereArgs: [_userInfo?['id']]);
+  List<Map<String, dynamic>> codes = await db.query('codes', where: 'user_id = ?', whereArgs: [_userInfo?['id']]);
 
-    // Combiner toutes les listes dans une seule
-    List<Map<String, dynamic>> allItems = [];
-    allItems.addAll(commands);
-    allItems.addAll(notes);
-    allItems.addAll(codes);
+  // Combiner toutes les listes dans une seule
+  List<Map<String, dynamic>> allItems = [];
+  allItems.addAll(commands);
+  allItems.addAll(notes);
+  allItems.addAll(codes);
 
-    // Filter items based on search query
-    if (_searchQuery.isNotEmpty) {
-      allItems = allItems.where((item) {
-        return item['title']
-                .toLowerCase()
-                .contains(_searchQuery.toLowerCase()) ||
-            (item['description'] != null &&
-                item['description']!
-                    .toLowerCase()
-                    .contains(_searchQuery.toLowerCase()));
-      }).toList();
-    }
-
-    return allItems;
+  // Filter items based on search query
+  if (_searchQuery.isNotEmpty) {
+    allItems = allItems.where((item) {
+      return item['title']
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
+          (item['description'] != null &&
+              item['description']!
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()));
+    }).toList();
   }
+
+  return allItems;
+}
 
   Widget _buildSearchBar() {
     return Padding(
