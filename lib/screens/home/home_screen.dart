@@ -23,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
   String _content = '';
   String _formSelectedType = 'Command';
 
-  
+   // Nouvelle variable pour le filtre
+  String _selectedFilter = 'All'; // 'All', 'Command', 'Note', 'Code'
 
    @override
   void didPopNext() {
@@ -111,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
     }
   }
 
+  /*
   Future<List<Map<String, dynamic>>> _fetchItems() async {
   final db = await DatabaseService.instance.database;
 
@@ -126,6 +128,55 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
   allItems.addAll(codes);
 
   // Filter items based on search query
+  if (_searchQuery.isNotEmpty) {
+    allItems = allItems.where((item) {
+      return item['title']
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
+          (item['description'] != null &&
+              item['description']!
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()));
+    }).toList();
+  }
+
+  return allItems;
+} */
+
+Future<List<Map<String, dynamic>>> _fetchItems() async {
+  final db = await DatabaseService.instance.database;
+
+  List<Map<String, dynamic>> allItems = [];
+
+  // Récupérer les éléments en fonction du filtre sélectionné
+  if (_selectedFilter == 'All' || _selectedFilter == 'Command') {
+    List<Map<String, dynamic>> commands = await db.query(
+      'commands',
+      where: 'user_id = ?',
+      whereArgs: [_userInfo?['id']],
+    );
+    allItems.addAll(commands.map((item) => {...item, 'type': 'Command'}));
+  }
+
+  if (_selectedFilter == 'All' || _selectedFilter == 'Note') {
+    List<Map<String, dynamic>> notes = await db.query(
+      'notes',
+      where: 'user_id = ?',
+      whereArgs: [_userInfo?['id']],
+    );
+    allItems.addAll(notes.map((item) => {...item, 'type': 'Note'}));
+  }
+
+  if (_selectedFilter == 'All' || _selectedFilter == 'Code') {
+    List<Map<String, dynamic>> codes = await db.query(
+      'codes',
+      where: 'user_id = ?',
+      whereArgs: [_userInfo?['id']],
+    );
+    allItems.addAll(codes.map((item) => {...item, 'type': 'Code'}));
+  }
+
+  // Filtrer les éléments en fonction de la recherche
   if (_searchQuery.isNotEmpty) {
     allItems = allItems.where((item) {
       return item['title']
@@ -272,6 +323,20 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
       ),
       body: Column(
         children: [
+          // Boutons de filtre
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildFilterButton('All'),
+              _buildFilterButton('Command'),
+              _buildFilterButton('Note'),
+              _buildFilterButton('Code'),
+            ],
+          ),
+        ),
+        Divider(),
           // Bouton pour ouvrir le formulaire d'ajout
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -439,6 +504,23 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
       ),
     );
   }
+
+  Widget _buildFilterButton(String type) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: ElevatedButton(
+      onPressed: () {
+        setState(() {
+          _selectedFilter = type;
+        });
+      },
+      child: Text(type),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: _selectedFilter == type ? Colors.blue : Colors.grey,
+      ),
+    ),
+  );
+}
 
   // Méthode pour afficher le Dialog
   void _showAddFormDialog(BuildContext context) {
