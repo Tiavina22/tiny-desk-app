@@ -404,6 +404,26 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
                                     //     color: Colors.grey[600],
                                     //   ),
                                     // ),
+                                    const SizedBox(height: 12.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: PopupMenuButton<String>(
+                icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    _deleteItem(item);
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Text('Supprimer la note'),
+                    ),
+                  ];
+                },
+              ),
+            ),
                                   ],
                                 ),
                               ),
@@ -547,4 +567,30 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
     await AuthService().logout();
     Navigator.pushReplacementNamed(context, '/login');
   }
+
+  Future<void> _deleteItem(Map<String, dynamic> item) async {
+  final db = await DatabaseService.instance.database;
+
+  // Déterminer la table en fonction du type d'élément
+  String tableName;
+  if (item.containsKey('command')) {
+    tableName = 'commands';
+  } else if (item.containsKey('note')) {
+    tableName = 'notes';
+  } else if (item.containsKey('code')) {
+    tableName = 'codes';
+  } else {
+    return; // Si le type n'est pas reconnu, ne rien faire
+  }
+
+  // Supprimer l'élément de la base de données
+  await db.delete(tableName, where: 'id = ?', whereArgs: [item['id']]);
+
+  // Mettre à jour l'état pour refléter la suppression
+  setState(() {});
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Élément supprimé avec succès!')),
+  );
+}
 }
