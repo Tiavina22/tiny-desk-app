@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:tiny_desk/screens/auth/login_screen.dart';
 
 Future<void> showSuccessDialog(BuildContext context) async {
+  // Récupération du thème actuel
+  final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+  final backgroundColor = Theme.of(context).dialogBackgroundColor;
+  final primaryTextColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black;
+
+  // Couleur du bouton : Dynamique ou valeur par défaut
+  final buttonColor = Theme.of(context).primaryColor ?? (isDarkTheme ? Colors.greenAccent : Colors.green);
+
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return Dialog(
-        backgroundColor: const Color(0xFF2D2D2D),
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -16,31 +24,52 @@ Future<void> showSuccessDialog(BuildContext context) async {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 100,
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Background animation (pulsing circle)
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.green.withOpacity(0.3),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.7, 1.0],
+                      ),
+                    ),
+                  ),
+                  // Success Icon
+                  const Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 100,
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Inscription Réussie !',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: primaryTextColor,
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Merci pour votre inscription à Tiny Desk ! Vous pouvez maintenant vous connecter et explorer nos fonctionnalités.',
+              const SizedBox(height: 10),
+              Text(
+                'Vous êtes maintenant inscrit à Tiny Desk. Accédez à votre compte et découvrez toutes nos fonctionnalités !',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
+                  color: primaryTextColor.withOpacity(0.7),
+                  fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -49,19 +78,19 @@ Future<void> showSuccessDialog(BuildContext context) async {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[700],
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+                  backgroundColor: isDarkTheme ? const Color.fromARGB(255, 226, 226, 226) : Colors.black, // Couleur du bouton
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  elevation: 5, 
+                  elevation: isDarkTheme ? 0 : 3, // Réduction de l'ombre en mode sombre
                 ),
-                child: const Text(
+                child: Text(
                   'Aller à la Connexion',
                   style: TextStyle(
-                    fontSize: 18, 
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: isDarkTheme ? Colors.black : Colors.white,
                   ),
                 ),
               ),
