@@ -76,7 +76,7 @@ Future<void> showSuccessDialog(BuildContext context) async {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
-                },
+                }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isDarkTheme ? const Color.fromARGB(255, 226, 226, 226) : Colors.black, // Couleur du bouton
                   padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),

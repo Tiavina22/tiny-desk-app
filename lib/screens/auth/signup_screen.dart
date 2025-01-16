@@ -16,6 +16,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
+  int _currentStep = 0;
 
   final AuthService _authService = AuthService();
 
@@ -57,6 +58,159 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
+  void _nextStep() {
+    if (_currentStep < 2) {
+      setState(() {
+        _currentStep++;
+      });
+    }
+  }
+
+  void _previousStep() {
+    if (_currentStep > 0) {
+      setState(() {
+        _currentStep--;
+      });
+    }
+  }
+
+  Widget _buildStepOne() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _usernameController,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            labelText: 'Nom d\'utilisateur',
+            labelStyle: TextStyle(color: Colors.grey[400]),
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            filled: true,
+            fillColor: const Color(0xFF3D3D3D),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            prefixIcon: Icon(Icons.person, color: Colors.grey[400]),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez entrer un nom d\'utilisateur';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: _nextStep,
+          child: const Text('Suivant'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepTwo() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _passwordController,
+          style: const TextStyle(color: Colors.white),
+          obscureText: _obscurePassword,
+          decoration: InputDecoration(
+            labelText: 'Mot de passe',
+            labelStyle: TextStyle(color: Colors.grey[400]),
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            filled: true,
+            fillColor: const Color(0xFF3D3D3D),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey[400],
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez entrer un mot de passe';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: _nextStep,
+          child: const Text('Suivant'),
+        ),
+        ElevatedButton(
+          onPressed: _previousStep,
+          child: const Text('Précédent'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepThree() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _confirmPasswordController,
+          style: const TextStyle(color: Colors.white),
+          obscureText: _obscureConfirmPassword,
+          decoration: InputDecoration(
+            labelText: 'Confirmation',
+            labelStyle: TextStyle(color: Colors.grey[400]),
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            filled: true,
+            fillColor: const Color(0xFF3D3D3D),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey[400],
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                });
+              },
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez confirmer votre mot de passe';
+            }
+            if (value != _passwordController.text) {
+              return 'Les mots de passe ne correspondent pas';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: _previousStep,
+          child: const Text('Précédent'),
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: _handleSignup,
+          child: const Text('S\'inscrire'),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,138 +263,13 @@ class _SignupScreenState extends State<SignupScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
-                        TextFormField(
-                          controller: _usernameController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            labelText: 'Nom d\'utilisateur',
-                            labelStyle: TextStyle(color: Colors.grey[400]),
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            filled: true,
-                            fillColor: const Color(0xFF3D3D3D),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon:
-                                Icon(Icons.person, color: Colors.grey[400]),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer un nom d\'utilisateur';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          style: const TextStyle(color: Colors.white),
-                          obscureText: _obscurePassword,
-                          decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            labelStyle: TextStyle(color: Colors.grey[400]),
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            filled: true,
-                            fillColor: const Color(0xFF3D3D3D),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon:
-                                Icon(Icons.lock, color: Colors.grey[400]),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Colors.grey[400],
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer un mot de passe';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          style: const TextStyle(color: Colors.white),
-                          obscureText: _obscureConfirmPassword,
-                          decoration: InputDecoration(
-                            labelText: 'Confirmation',
-                            labelStyle: TextStyle(color: Colors.grey[400]),
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            filled: true,
-                            fillColor: const Color(0xFF3D3D3D),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon:
-                                Icon(Icons.lock, color: Colors.grey[400]),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureConfirmPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Colors.grey[400],
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureConfirmPassword =
-                                      !_obscureConfirmPassword;
-                                });
-                              },
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez confirmer votre mot de passe';
-                            }
-                            if (value != _passwordController.text) {
-                              return 'Les mots de passe ne correspondent pas';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                         ElevatedButton(
-                          onPressed: _isLoading ? null : _handleSignup,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue[700],
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'S\'inscrire',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
+                        IndexedStack(
+                          index: _currentStep,
+                          children: [
+                            _buildStepOne(),
+                            _buildStepTwo(),
+                            _buildStepThree(),
+                          ],
                         ),
                         const SizedBox(height: 20),
                         Row(
