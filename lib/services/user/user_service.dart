@@ -4,7 +4,7 @@ import 'package:tiny_desk/core/config/config.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class UserService {
-  final String baseUrl = BASE_URL ?? 'http://localhost:8080';
+  final String baseUrl = Config.baseUlr;
 
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
