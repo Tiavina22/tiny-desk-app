@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiny_desk/core/config/config.dart';
 
+import 'dart:io' show Process;
+
 class AuthService {
   final String baseUrl = Config.baseUlr;
 
@@ -28,6 +30,17 @@ class AuthService {
         'success': false,
         'message': error['message'] ?? 'Erreur inconnue',
       };
+    }
+  }
+
+  // Connexion GitHub
+  Future<void> loginWithGitHub() async {
+    const url = 'http://localhost:8080/auth/github';
+
+    try {
+      await Process.run('xdg-open', [url]);
+    } catch (e) {
+      throw 'Impossible de lancer $url: $e';
     }
   }
 
