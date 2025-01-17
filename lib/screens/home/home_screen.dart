@@ -245,89 +245,136 @@ Future<List<Map<String, dynamic>>> _fetchItems() async {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tiny Desk'),
-        actions: [
-          // Dark Mode Switch
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Switch(
-              value: _isDarkMode,
-              onChanged: (value) {
-                _saveTheme(value);
-              },
+  Widget _buildFilterButton(String type) {
+  IconData icon;
+  Color activeColor;
+
+  switch (type) {
+    case 'All':
+      icon = Icons.all_inclusive;
+      activeColor = Colors.blue;
+      break;
+    case 'Command':
+      icon = Icons.terminal;
+      activeColor = Colors.red;
+      break;
+    case 'Note':
+      icon = Icons.note;
+      activeColor = Colors.green;
+      break;
+    case 'Code':
+      icon = Icons.code;
+      activeColor = Colors.orange;
+      break;
+    default:
+      icon = Icons.all_inclusive;
+      activeColor = Colors.blue;
+  }
+
+  return Padding(
+    padding: const EdgeInsets.all(4.0),
+    child: FilterChip(
+      label: Text(type),
+      avatar: Icon(icon, size: 16),
+      selected: _selectedFilter == type,
+      onSelected: (bool selected) {
+        setState(() {
+          _selectedFilter = type;
+        });
+      },
+      selectedColor: activeColor,
+      backgroundColor: Colors.grey[300],
+      labelStyle: TextStyle(
+        color: _selectedFilter == type ? Colors.white : Colors.black,
+      ),
+      checkmarkColor: Colors.white,
+    ),
+  );
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Tiny Desk'),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: 16.0),
+          child: Switch(
+            value: _isDarkMode,
+            onChanged: (value) {
+              _saveTheme(value);
+            },
+          ),
+        ),
+      ],
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(50.0),
+        child: _buildSearchBar(),
+      ),
+    ),
+    drawer: Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text(
+              _userInfo?['username'] ?? 'Nom de l\'utilisateur',
+              style: TextStyle(color: Colors.white),
+            ),
+            accountEmail: Text(
+              'email@example.com',
+              style: TextStyle(color: Colors.white70),
+            ),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, size: 50),
             ),
           ),
+          _buildDrawerItem(
+            context,
+            'Commandes',
+            Icons.terminal,
+            () => Navigator.pushNamed(context, '/commands'),
+          ),
+          _buildDrawerItem(
+            context,
+            'Notes',
+            Icons.note,
+            () => Navigator.pushNamed(context, '/notes'),
+          ),
+          _buildDrawerItem(
+            context,
+            'Codes',
+            Icons.code,
+            () => Navigator.pushNamed(context, '/codes'),
+          ),
+          Divider(),
+          _buildDrawerItem(
+            context,
+            'Paramètres',
+            Icons.settings,
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SettingsScreen()),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Se déconnecter'),
+            onTap: () => _logout(context),
+          ),
         ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
-          child: _buildSearchBar(),
-        ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(
-                _userInfo?['username'] ?? 'Nom de l\'utilisateur',
-                style: TextStyle(color: Colors.white),
-              ),
-              accountEmail: Text(
-                'email@example.com',
-                style: TextStyle(color: Colors.white70),
-              ),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, size: 50),
-              ),
-            ),
-            _buildDrawerItem(
-              context,
-              'Commandes',
-              Icons.terminal,
-              () => Navigator.pushNamed(context, '/commands'),
-            ),
-            _buildDrawerItem(
-              context,
-              'Notes',
-              Icons.note,
-              () => Navigator.pushNamed(context, '/notes'),
-            ),
-            _buildDrawerItem(
-              context,
-              'Codes',
-              Icons.code,
-              () => Navigator.pushNamed(context, '/codes'),
-            ),
-            Divider(),
-            _buildDrawerItem(
-              context,
-              'Paramètres',
-              Icons.settings,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Se déconnecter'),
-              onTap: () => _logout(context),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          // Boutons de filtre
+    ),
+    body: Column(
+      children: [
+        // Boutons de filtre
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
             children: [
               _buildFilterButton('All'),
               _buildFilterButton('Command'),
@@ -337,187 +384,161 @@ Future<List<Map<String, dynamic>>> _fetchItems() async {
           ),
         ),
         Divider(),
-          // Bouton pour ouvrir le formulaire d'ajout
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _showAddFormDialog(context);
-              },
-              child: Text('Ajouter une entrée'),
-            ),
+        // Bouton pour ouvrir le formulaire d'ajout
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              _showAddFormDialog(context);
+            },
+            child: Text('Ajouter une entrée'),
           ),
-          Divider(),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _fetchItems(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
+        ),
+        Divider(),
+        Expanded(
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _fetchItems(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucune donnée disponible.'));
-                }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('Aucune donnée disponible.'));
+              }
 
-                final items = snapshot.data!;
+              final items = snapshot.data!;
 
-                // Calcul du nombre de colonnes en fonction de la largeur de l'écran
-                double screenWidth = MediaQuery.of(context).size.width;
-                int crossAxisCount = screenWidth > 1200
-                    ? 10
-                    : screenWidth > 800
-                        ? 6
-                        : 3;
+              // Calcul du nombre de colonnes en fonction de la largeur de l'écran
+              double screenWidth = MediaQuery.of(context).size.width;
+              int crossAxisCount = screenWidth > 1200
+                  ? 10
+                  : screenWidth > 800
+                      ? 6
+                      : 3;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: MasonryGridView.count(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      String itemType = item.containsKey('command')
-                          ? 'Command'
-                          : item.containsKey('note')
-                              ? 'Note'
-                              : 'Code';
-                      Color circleColor;
-                      switch (itemType) {
-                        case 'Command':
-                          circleColor = Colors.red;
-                          break;
-                        case 'Note':
-                          circleColor = Colors.green;
-                          break;
-                        case 'Code':
-                          circleColor = Colors.yellow;
-                          break;
-                        default:
-                          circleColor = Colors.grey;
-                      }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: MasonryGridView.count(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    String itemType = item.containsKey('command')
+                        ? 'Command'
+                        : item.containsKey('note')
+                            ? 'Note'
+                            : 'Code';
+                    Color circleColor;
+                    switch (itemType) {
+                      case 'Command':
+                        circleColor = Colors.red;
+                        break;
+                      case 'Note':
+                        circleColor = Colors.green;
+                        break;
+                      case 'Code':
+                        circleColor = Colors.yellow;
+                        break;
+                      default:
+                        circleColor = Colors.grey;
+                    }
 
-                      return GestureDetector(
-                          onTap: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(item: item),
-                              ),
-                            );
+                    return GestureDetector(
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailScreen(item: item),
+                          ),
+                        );
 
-                            // Si des modifications ont été apportées, mettez à jour l'état
-                            if (result == true) {
-                              setState(() {});
-                            }
-                          },
-                          child: SizedBox(
-                            width: 250, // Fixe la largeur à 150 pixels
-                            child: Card(
-                              margin: const EdgeInsets.all(0.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              elevation: 4.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize
-                                      .min, // Hauteur minimale basée sur le contenu
+                        // Si des modifications ont été apportées, mettez à jour l'état
+                        if (result == true) {
+                          setState(() {});
+                        }
+                      },
+                      child: SizedBox(
+                        width: 250, // Fixe la largeur à 150 pixels
+                        child: Card(
+                          margin: const EdgeInsets.all(0.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 4.0,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize
+                                  .min, // Hauteur minimale basée sur le contenu
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 6,
-                                          backgroundColor: circleColor,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Expanded(
-                                          child: Text(
-                                            item['title'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    CircleAvatar(
+                                      radius: 6,
+                                      backgroundColor: circleColor,
                                     ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      item['description'] ??
-                                          'Aucune description',
-                                      maxLines: 5,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.grey[700],
+                                    const SizedBox(width: 8.0),
+                                    Expanded(
+                                      child: Text(
+                                        item['title'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                    // const SizedBox(
-                                    //     height:
-                                    //         12.0), // Espacement avant l'icône
-                                    // Align(
-                                    //   alignment: Alignment.bottomRight,
-                                    //   child: Icon(
-                                    //     Icons.arrow_forward,
-                                    //     color: Colors.grey[600],
-                                    //   ),
-                                    // ),
-                                    const SizedBox(height: 12.0),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert, color: Colors.grey[600]),
-                onSelected: (value) {
-                  if (value == 'delete') {
-                    _deleteItem(item);
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<String>(
-                      value: 'delete',
-                      child: Text('Supprimer la note'),
-                    ),
-                  ];
-                },
-              ),
-            ),
                                   ],
                                 ),
-                              ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  item['description'] ??
+                                      'Aucune description',
+                                  maxLines: 5,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                const SizedBox(height: 12.0),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: PopupMenuButton<String>(
+                                    icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+                                    onSelected: (value) {
+                                      if (value == 'delete') {
+                                        _deleteItem(item);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        PopupMenuItem<String>(
+                                          value: 'delete',
+                                          child: Text('Supprimer la note'),
+                                        ),
+                                      ];
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ));
-                    },
-                  ),
-                );
-              },
-            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterButton(String type) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: ElevatedButton(
-      onPressed: () {
-        setState(() {
-          _selectedFilter = type;
-        });
-      },
-      child: Text(type),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _selectedFilter == type ? Colors.blue : Colors.grey,
-      ),
+        ),
+      ],
     ),
   );
 }
