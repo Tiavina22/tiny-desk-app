@@ -61,6 +61,11 @@ class DatabaseService {
     ''');
   }
 
+  Future<List<Map<String, dynamic>>> getCommands() async{
+    final db = await instance.database;
+    return await db.query('commands');
+  }
+
   bool get isDesktop => Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
 } 
