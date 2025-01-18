@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:tiny_desk/screens/details/details_screen.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
+import 'package:tiny_desk/services/user/user_service.dart';
 class CommandScreen extends StatefulWidget {
   @override
   _CommandScreenState createState() => _CommandScreenState();
@@ -10,9 +11,33 @@ class CommandScreen extends StatefulWidget {
 class _CommandScreenState extends State<CommandScreen> {
   final DatabaseService dbService = DatabaseService.instance;
 
-  // Méthode pour récupérer les commandes
+  Map<String, dynamic>? _userInfo; 
+
+   @override
+  void initState() {
+    super.initState();
+    _fetchUserInfo(); // Récupérer les informations de l'utilisateur au démarrage
+  }
+
+   Future<void> _fetchUserInfo() async {
+    final userInfo = await UserService().getUserInfo();
+    setState(() {
+      _userInfo = userInfo;
+    });
+  }
+
+  // Méthode pour récupérer les commandes filtrées par user_id
   Future<List<Map<String, dynamic>>> _fetchCommands() async {
-    return await dbService.getCommands();
+    if (_userInfo == null || _userInfo!['id'] == null) {
+      return []; // Retourner une liste vide si l'utilisateur n'est pas connecté
+    }
+
+    final db = await dbService.database;
+    return await db.query(
+      'commands',
+      where: 'user_id = ?',
+      whereArgs: [_userInfo!['id']],
+    );
   }
 
   // Méthode pour supprimer une commande
@@ -21,13 +46,13 @@ class _CommandScreenState extends State<CommandScreen> {
     await db.delete('commands', where: 'id = ?', whereArgs: [command['id']]);
     setState(() {}); // Rafraîchir l'interface après la suppression
 
-     // Afficher un SnackBar
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('Commande supprimée avec succès'),
-      duration: Duration(seconds: 2),
-    ),
-  );
+    // Afficher un SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Commande supprimée avec succès'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
