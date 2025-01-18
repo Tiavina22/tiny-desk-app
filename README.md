@@ -1,6 +1,6 @@
 # TinyDesk
 
-Cette application de bureau Flutter est conçue pour résoudre le problème de gestion quotidienne des commandes, des bouts de code et des notes fréquemment utilisés. L'objectif est de stocker et d'organiser des commandes (par exemple, des commandes terminal), des snippets de code, et des notes personnelles dans un espace dédié, facilement accessible, et synchronisable avec un serveur pour une utilisation optimale même en l'absence de connexion Internet.
+This software est conçue pour résoudre le problème de gestion quotidienne des commandes, des bouts de code et des notes fréquemment utilisés. L'objectif est de stocker et d'organiser des commandes (par exemple, des commandes terminal), des snippets de code, et des notes personnelles dans un espace dédié, facilement accessible, et synchronisable avec un serveur pour une utilisation optimale même en l'absence de connexion Internet.
 
 # TODO (priorité) :
 - [ ] Refactoriser le code
