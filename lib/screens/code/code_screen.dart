@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:tiny_desk/screens/details/details_screen.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
+import 'package:tiny_desk/services/user/user_service.dart';
 
 
 
@@ -12,14 +13,38 @@ class CodeScreen extends StatefulWidget {
 
 class _CodeScreenState extends State<CodeScreen> {
   final DatabaseService dbService = DatabaseService.instance;
+  
+  Map<String, dynamic>? _userInfo; 
+
+   @override
+  void initState() {
+    super.initState();
+    _fetchUserInfo(); // Récupérer les informations de l'utilisateur au démarrage
+  }
+
+   Future<void> _fetchUserInfo() async {
+    final userInfo = await UserService().getUserInfo();
+    setState(() {
+      _userInfo = userInfo;
+    });
+  }
 
   // Méthode pour récupérer les codes
   Future<List<Map<String, dynamic>>> _fetchCodes() async {
-    return await dbService.getCodes();
+    if (_userInfo == null || _userInfo!['id'] == null) {
+      return []; // Retourner une liste vide si l'utilisateur n'est pas connecté
+    }
+
+    final db = await dbService.database;
+    return await db.query(
+      'codes',
+      where: 'user_id = ?',
+      whereArgs: [_userInfo!['id']],
+    );
   }
 
   // Méthode pour supprimer une code
-  Future<void> _deleteCommand(Map<String, dynamic> code) async {
+  Future<void> _deleteCode(Map<String, dynamic> code) async {
     final db = await dbService.database;
     await db.delete('codes', where: 'id = ?', whereArgs: [code['id']]);
     setState(() {}); // Rafraîchir l'interface après la suppression
@@ -72,7 +97,7 @@ class _CodeScreenState extends State<CodeScreen> {
                     itemCount: codes.length,
                     itemBuilder: (context, index) {
                       final code = codes[index];
-                      Color circleColor = Colors.red;
+                      Color circleColor = Colors.orange;
 
                       return GestureDetector(
                         onTap: () async {
@@ -140,7 +165,7 @@ class _CodeScreenState extends State<CodeScreen> {
                                       icon: Icon(Icons.more_vert, color: Colors.grey[600]),
                                       onSelected: (value) {
                                         if (value == 'delete') {
-                                          _deleteCommand(code);
+                                          _deleteCode(code);
                                         }
                                       },
                                       itemBuilder: (BuildContext context) {
