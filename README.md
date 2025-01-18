@@ -22,12 +22,12 @@ Cette application de bureau Flutter est conçue pour résoudre le problème de g
 | **Recherche**                     | Permet à l'utilisateur de rechercher des commandes, des extraits de code ou des notes par titre ou description.                                     |
 | **Configuration**                 | Mode sombre et mode clair pour personnaliser l'interface. Option de synchronisation automatique des données lorsque la connexion est rétablie, ou synchronisation manuelle. |
 | **Déconnexion (Logout)**          | Permet à l'utilisateur de se déconnecter de son compte.                                                                                             |
+| **Catégories**                    | Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.                                |
 
 ### Not completed :
 
 | **Feature**                      | **Description**                                                                                                                                     |
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Catégories**                    | Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.                                |
 | **Synchronisation en ligne**      | La synchronisation des données avec un serveur en ligne est activée pour la sauvegarde des données et l'accès depuis différents appareils.         |
 
 ## Plus de features
