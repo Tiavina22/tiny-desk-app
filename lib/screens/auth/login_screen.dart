@@ -15,6 +15,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final AuthService _authService = AuthService();
 
+  void _loginWithGitHub() async {
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    await _authService.loginWithGitHub(context);
+  } catch (e) {
+    _showErrorMessage('Erreur : ${e.toString()}');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
+
   void _login() async {
     if(!_formKey.currentState!.validate()) return;
 
@@ -190,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 20),
 ElevatedButton(
-                          onPressed: _authService.loginWithGitHub,
+                          onPressed: _isLoading ? null : _loginWithGitHub,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(vertical: 16),
