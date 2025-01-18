@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -47,6 +48,17 @@ class _DetailScreenState extends State<DetailScreen> {
     _saveTimer = Timer(Duration(seconds: 2), () {
       _saveChanges(); // Sauvegarde automatique après 2 secondes d'inactivité
     });
+  }
+
+   // Méthode pour copier le contenu dans le presse-papiers
+  void _copyToClipboard() {
+    Clipboard.setData(ClipboardData(text: _contentController.text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Contenu copié dans le presse-papiers!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   Future<void> _saveChanges() async {
@@ -112,6 +124,8 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isCommand = widget.item.containsKey('command');
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -154,15 +168,53 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
               Divider(height: 32.0, thickness: 1.0),
-              TextField(
-                controller: _contentController,
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: 'Ajoutez du contenu ici...',
-                  border: InputBorder.none,
+             // Condition pour afficher le contenu en mode terminal ou normal
+              if (isCommand)
+                Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextField(
+                        controller: _contentController,
+                        style: TextStyle(
+                          fontFamily: 'Courier',
+                          fontSize: 14.0,
+                          color: Colors.green,
+                        ),
+                        maxLines: null,
+                        decoration: InputDecoration(
+                          hintText: 'Ajoutez du contenu ici...',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    // Icône de copie en haut à droite
+                    Positioned(
+                      top: 8.0,
+                      right: 8.0,
+                      child: IconButton(
+                        icon: Icon(Icons.copy, color: const Color.fromARGB(255, 136, 136, 136)),
+                        onPressed: _copyToClipboard,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                TextField(
+                  controller: _contentController,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    hintText: 'Ajoutez du contenu ici...',
+                    border: InputBorder.none,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
