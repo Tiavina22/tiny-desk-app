@@ -412,7 +412,7 @@ Widget build(BuildContext context) {
               // Calcul du nombre de colonnes en fonction de la largeur de l'écran
               double screenWidth = MediaQuery.of(context).size.width;
               int crossAxisCount = screenWidth > 1200
-                  ? 10
+                  ? 6
                   : screenWidth > 800
                       ? 6
                       : 3;

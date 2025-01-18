@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,52 +17,65 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
 
   void _loginWithGitHub() async {
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    await _authService.loginWithGitHub(context);
-  } catch (e) {
-    _showErrorMessage('Erreur : ${e.toString()}');
-  } finally {
     setState(() {
-      _isLoading = false;
-    });
-  }
-}
-
-  void _login() async {
-    if(!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true; 
+      _isLoading = true;
     });
 
-    try{
-      final response = await _authService.login(_usernameController.text, _passwordController.text);
-
-      // Vérification du succès
-      if(response['message'] == "success"){
-        // On Navigue vers HomePage
-        print("Avant");
-        Navigator.pushReplacementNamed(context, '/home');
-        print("Apres");
-      }else{
-        // Un message d'erreur au cas ou error
-        _showErrorMessage(response['message'] ?? 'Echec de la connexion');
-      }
-    }catch(e){
+    try {
+      await _authService.loginWithGitHub(context);
+    } catch (e) {
       _showErrorMessage('Erreur : ${e.toString()}');
-    }finally{
+    } finally {
       setState(() {
         _isLoading = false;
       });
     }
   }
 
-  void _showErrorMessage(String message){
-    showDialog(context: context, builder: (context) => AlertDialog(title: Text('Erreur', style: TextStyle(color: Colors.red),), content: Text(message), actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text("Ok"))],));
+  void _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await _authService.login(
+          _usernameController.text, _passwordController.text);
+
+      // Vérification du succès
+      if (response['message'] == "success") {
+        // On Navigue vers HomePage
+        print("Avant");
+        Navigator.pushReplacementNamed(context, '/home');
+        print("Apres");
+      } else {
+        // Un message d'erreur au cas ou error
+        _showErrorMessage(response['message'] ?? 'Echec de la connexion');
+      }
+    } catch (e) {
+      _showErrorMessage('Erreur : ${e.toString()}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(
+                'Erreur',
+                style: TextStyle(color: Colors.red),
+              ),
+              content: Text(message),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context), child: Text("Ok"))
+              ],
+            ));
   }
 
   @override
@@ -89,11 +103,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Column(
-                          children: [Image.asset(
-                                'assets/images/logo_white.png',
-                                height: 80,
-                              ),
-                            
+                          children: [
+                            Image.asset(
+                              'assets/images/logo_white.png',
+                              height: 80,
+                            ),
                             const SizedBox(height: 24),
                             const Text(
                               'Bienvenue sur Tiny',
@@ -115,7 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
-
                         TextFormField(
                           controller: _usernameController,
                           style: const TextStyle(color: Colors.white),
@@ -129,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.person, color: Colors.grey[400]),
+                            prefixIcon:
+                                Icon(Icons.person, color: Colors.grey[400]),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -153,10 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey[400]),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.grey[400]),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.grey[400],
                               ),
                               onPressed: () {
@@ -174,7 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                         const SizedBox(height: 24),
-
                         ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
@@ -205,15 +221,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                         ),
                         const SizedBox(height: 20),
-ElevatedButton(
-                          onPressed: _isLoading ? null : _loginWithGitHub,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: const Text('Se connecter avec GitHub', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        ),
+                       ElevatedButton(
+  onPressed: _isLoading ? null : _loginWithGitHub,
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.black,
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      FaIcon(
+        FontAwesomeIcons.github, // Icône GitHub de Font Awesome
+        color: Colors.white,
+        size: 24,
+      ),
+      const SizedBox(width: 8), // Espace entre l'icône et le texte
+      const Text(
+        'Se connecter avec GitHub',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Couleur blanche pour le texte
+        ),
+      ),
+    ],
+  ),
+),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
