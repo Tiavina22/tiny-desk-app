@@ -6,7 +6,7 @@ import 'package:tiny_desk/services/database/database_service.dart';
 class DetailScreen extends StatefulWidget {
   final Map<String, dynamic> item;
 
-  DetailScreen({required this.item});
+  const DetailScreen({super.key, required this.item});
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -45,7 +45,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void _onTextChanged() {
     // Redémarre le timer chaque fois qu'il y a une modification
     _saveTimer?.cancel();
-    _saveTimer = Timer(Duration(seconds: 2), () {
+    _saveTimer = Timer(const Duration(seconds: 2), () {
       _saveChanges(); // Sauvegarde automatique après 2 secondes d'inactivité
     });
   }
@@ -54,7 +54,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void _copyToClipboard() {
     Clipboard.setData(ClipboardData(text: _contentController.text));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Contenu copié dans le presse-papiers!'),
         duration: Duration(seconds: 2),
       ),
@@ -91,7 +91,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
       // Affiche un feedback discret
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Élément supprimé car tous les champs étaient vides.'),
           duration: Duration(seconds: 2),
         ),
@@ -114,7 +114,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
       // Affiche un feedback discret
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Modifications sauvegardées automatiquement!'),
           duration: Duration(seconds: 1),
         ),
@@ -132,14 +132,14 @@ class _DetailScreenState extends State<DetailScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Theme.of(context).colorScheme.onSurface,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.blue), // Icône personnalisée
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.blue), // Icône personnalisée
           onPressed: () {
             Navigator.pop(context, true); // Retour personnalisé avec un résultat
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _saveChanges, // Bouton manuel pour sauvegarder
           ),
         ],
@@ -153,41 +153,41 @@ class _DetailScreenState extends State<DetailScreen> {
               TextField(
                 controller: _titleController,
                 style: Theme.of(context).textTheme.headlineSmall,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Titre',
                   border: InputBorder.none,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: _descriptionController,
                 style: Theme.of(context).textTheme.bodyLarge,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Description',
                   border: InputBorder.none,
                 ),
               ),
-              Divider(height: 32.0, thickness: 1.0),
+              const Divider(height: 32.0, thickness: 1.0),
              // Condition pour afficher le contenu en mode terminal ou normal
               if (isCommand)
                 Stack(
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: TextField(
                         controller: _contentController,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Courier',
                           fontSize: 14.0,
                           color: Colors.green,
                         ),
                         maxLines: null,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Ajoutez du contenu ici...',
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
@@ -199,7 +199,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       top: 8.0,
                       right: 8.0,
                       child: IconButton(
-                        icon: Icon(Icons.copy, color: const Color.fromARGB(255, 136, 136, 136)),
+                        icon: const Icon(Icons.copy, color: Color.fromARGB(255, 136, 136, 136)),
                         onPressed: _copyToClipboard,
                       ),
                     ),
@@ -210,7 +210,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   controller: _contentController,
                   style: Theme.of(context).textTheme.bodyMedium,
                   maxLines: null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Ajoutez du contenu ici...',
                     border: InputBorder.none,
                   ),

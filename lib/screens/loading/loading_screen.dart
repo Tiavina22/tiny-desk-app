@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LoadingScreen extends StatelessWidget {
   final ThemeMode themeMode;
 
-  const LoadingScreen({Key? key, required this.themeMode}) : super(key: key);
+  const LoadingScreen({super.key, required this.themeMode});
 
   @override
   Widget build(BuildContext context) {

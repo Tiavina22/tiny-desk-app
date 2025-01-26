@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiny_desk/core/config/config.dart';
-import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 
 

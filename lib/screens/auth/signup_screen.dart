@@ -4,6 +4,8 @@ import 'package:tiny_desk/services/auth/auth_service.dart';
 import 'package:tiny_desk/widgets/succes_signup_dialog.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }

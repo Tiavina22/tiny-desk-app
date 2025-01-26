@@ -4,6 +4,8 @@ import 'package:tiny_desk/screens/details/details_screen.dart';
 import 'package:tiny_desk/services/database/database_service.dart';
 import 'package:tiny_desk/services/user/user_service.dart';
 class CommandScreen extends StatefulWidget {
+  const CommandScreen({super.key});
+
   @override
   _CommandScreenState createState() => _CommandScreenState();
 }
@@ -48,7 +50,7 @@ class _CommandScreenState extends State<CommandScreen> {
 
     // Afficher un SnackBar
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Commande supprimée avec succès'),
         duration: Duration(seconds: 2),
       ),
@@ -59,7 +61,7 @@ class _CommandScreenState extends State<CommandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Commands'),
+        title: const Text('Commands'),
       ),
       body: Column(
         children: [
@@ -68,11 +70,11 @@ class _CommandScreenState extends State<CommandScreen> {
               future: _fetchCommands(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucune commande disponible.'));
+                  return const Center(child: Text('Aucune commande disponible.'));
                 }
 
                 final commands = snapshot.data!;
@@ -137,7 +139,7 @@ class _CommandScreenState extends State<CommandScreen> {
                                           command['title'] ?? '',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -167,7 +169,7 @@ class _CommandScreenState extends State<CommandScreen> {
                                       },
                                       itemBuilder: (BuildContext context) {
                                         return [
-                                          PopupMenuItem<String>(
+                                          const PopupMenuItem<String>(
                                             value: 'delete',
                                             child: Text('Supprimer la commande'),
                                           ),

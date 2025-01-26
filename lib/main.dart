@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
   final ThemeMode themeMode;
   final AuthService _authService = AuthService();
 
-  MyApp({required this.themeMode});
+  MyApp({super.key, required this.themeMode});
 
   @override
   Widget build(BuildContext context) {

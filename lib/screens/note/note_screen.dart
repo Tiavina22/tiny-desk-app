@@ -10,6 +10,8 @@ import 'package:tiny_desk/services/user/user_service.dart';
 
 
 class NoteScreen extends StatefulWidget {
+  const NoteScreen({super.key});
+
   @override
   _NoteScreenState createState() => _NoteScreenState();
 }
@@ -54,7 +56,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
      // Afficher un SnackBar
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
+    const SnackBar(
       content: Text('Note supprimée avec succès'),
       duration: Duration(seconds: 2),
     ),
@@ -65,7 +67,7 @@ class _NoteScreenState extends State<NoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notes'),
+        title: const Text('Notes'),
       ),
       body: Column(
         children: [
@@ -74,11 +76,11 @@ class _NoteScreenState extends State<NoteScreen> {
               future: _fetchNotes(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucune note disponible.'));
+                  return const Center(child: Text('Aucune note disponible.'));
                 }
 
                 final notes = snapshot.data!;
@@ -143,7 +145,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                           note['title'] ?? '',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -173,7 +175,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                       },
                                       itemBuilder: (BuildContext context) {
                                         return [
-                                          PopupMenuItem<String>(
+                                          const PopupMenuItem<String>(
                                             value: 'delete',
                                             child: Text('Supprimer la note'),
                                           ),

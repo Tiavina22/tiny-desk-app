@@ -7,6 +7,8 @@ import 'package:tiny_desk/services/user/user_service.dart';
 
 
 class CodeScreen extends StatefulWidget {
+  const CodeScreen({super.key});
+
   @override
   _CodeScreenState createState() => _CodeScreenState();
 }
@@ -51,7 +53,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
      // Afficher un SnackBar
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
+    const SnackBar(
       content: Text('COde supprimée avec succès'),
       duration: Duration(seconds: 2),
     ),
@@ -62,7 +64,7 @@ class _CodeScreenState extends State<CodeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Codes'),
+        title: const Text('Codes'),
       ),
       body: Column(
         children: [
@@ -71,11 +73,11 @@ class _CodeScreenState extends State<CodeScreen> {
               future: _fetchCodes(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucune code disponible.'));
+                  return const Center(child: Text('Aucune code disponible.'));
                 }
 
                 final codes = snapshot.data!;
@@ -140,7 +142,7 @@ class _CodeScreenState extends State<CodeScreen> {
                                           code['title'] ?? '',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -170,7 +172,7 @@ class _CodeScreenState extends State<CodeScreen> {
                                       },
                                       itemBuilder: (BuildContext context) {
                                         return [
-                                          PopupMenuItem<String>(
+                                          const PopupMenuItem<String>(
                                             value: 'delete',
                                             child: Text('Supprimer le code'),
                                           ),

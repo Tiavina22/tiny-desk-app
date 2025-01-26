@@ -9,6 +9,8 @@ import 'package:tiny_desk/services/user/user_service.dart';
 import 'package:tiny_desk/screens/settings/settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -105,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware{
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Donnée enregistrée avec succès!')),
+        const SnackBar(content: Text('Donnée enregistrée avec succès!')),
       );
 
       Navigator.of(context).pop(); // Ferme le Dialog après l'enregistrement
@@ -194,7 +196,7 @@ Future<List<Map<String, dynamic>>> _fetchItems() async {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -296,10 +298,10 @@ Future<List<Map<String, dynamic>>> _fetchItems() async {
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: Text('Tiny Desk'),
+      title: const Text('Tiny Desk'),
       actions: [
         Padding(
-          padding: EdgeInsets.only(right: 16.0),
+          padding: const EdgeInsets.only(right: 16.0),
           child: Switch(
             value: _isDarkMode,
             onChanged: (value) {
@@ -309,7 +311,7 @@ Widget build(BuildContext context) {
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
+        preferredSize: const Size.fromHeight(50.0),
         child: _buildSearchBar(),
       ),
     ),
@@ -320,13 +322,13 @@ Widget build(BuildContext context) {
           UserAccountsDrawerHeader(
             accountName: Text(
               _userInfo?['username'] ?? 'Nom de l\'utilisateur',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            accountEmail: Text(
+            accountEmail: const Text(
               'email@example.com',
               style: TextStyle(color: Colors.white70),
             ),
-            currentAccountPicture: CircleAvatar(
+            currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 50),
             ),
@@ -349,7 +351,7 @@ Widget build(BuildContext context) {
             Icons.code,
             () => Navigator.pushNamed(context, '/codes'),
           ),
-          Divider(),
+          const Divider(),
           _buildDrawerItem(
             context,
             'Paramètres',
@@ -360,8 +362,8 @@ Widget build(BuildContext context) {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Se déconnecter'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Se déconnecter'),
             onTap: () => _logout(context),
           ),
         ],
@@ -383,7 +385,7 @@ Widget build(BuildContext context) {
             ],
           ),
         ),
-        Divider(),
+        const Divider(),
         // Bouton pour ouvrir le formulaire d'ajout
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -391,20 +393,20 @@ Widget build(BuildContext context) {
             onPressed: () {
               _showAddFormDialog(context);
             },
-            child: Text('Ajouter une entrée'),
+            child: const Text('Ajouter une entrée'),
           ),
         ),
-        Divider(),
+        const Divider(),
         Expanded(
           child: FutureBuilder<List<Map<String, dynamic>>>(
             future: _fetchItems(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('Aucune donnée disponible.'));
+                return const Center(child: Text('Aucune donnée disponible.'));
               }
 
               final items = snapshot.data!;
@@ -487,7 +489,7 @@ Widget build(BuildContext context) {
                                         item['title'],
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -518,7 +520,7 @@ Widget build(BuildContext context) {
                                     },
                                     itemBuilder: (BuildContext context) {
                                       return [
-                                        PopupMenuItem<String>(
+                                        const PopupMenuItem<String>(
                                           value: 'delete',
                                           child: Text('Supprimer la note'),
                                         ),
@@ -549,7 +551,7 @@ Widget build(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(
+        title: const Text(
           'Ajouter une entrée',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
@@ -572,12 +574,12 @@ Widget build(BuildContext context) {
                       ),
                       border: InputBorder.none,
                     ),
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     onSaved: (value) => _title = value!,
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Veuillez entrer un titre' : null,
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   // Champ Description
                   TextFormField(
@@ -590,10 +592,10 @@ Widget build(BuildContext context) {
                       border: InputBorder.none,
                     ),
                     maxLines: null,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                     onSaved: (value) => _description = value,
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   // Champ Contenu
                   TextFormField(
@@ -607,12 +609,12 @@ Widget build(BuildContext context) {
                     ),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                     onSaved: (value) => _content = value!,
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Veuillez entrer un contenu' : null,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Sélection du Type
                   DropdownButtonFormField<String>(
@@ -634,7 +636,7 @@ Widget build(BuildContext context) {
                       _formSelectedType = value!;
                     }),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -643,7 +645,7 @@ Widget build(BuildContext context) {
         actions: [
           ElevatedButton(
             onPressed: _saveData,
-            child: Text('Enregistrer'),
+            child: const Text('Enregistrer'),
           ),
         ],
       );
@@ -693,7 +695,7 @@ Widget build(BuildContext context) {
   setState(() {});
 
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Élément supprimé avec succès!')),
+    const SnackBar(content: Text('Élément supprimé avec succès!')),
   );
 }
 }

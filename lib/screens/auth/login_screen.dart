@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiny_desk/services/auth/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -66,14 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(
+              title: const Text(
                 'Erreur',
                 style: TextStyle(color: Colors.red),
               ),
               content: Text(message),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context), child: Text("Ok"))
+                    onPressed: () => Navigator.pop(context), child: const Text("Ok"))
               ],
             ));
   }
@@ -230,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
       borderRadius: BorderRadius.circular(12),
     ),
   ),
-  child: Row(
+  child: const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       FaIcon(
@@ -238,8 +240,8 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Colors.white,
         size: 24,
       ),
-      const SizedBox(width: 8), // Espace entre l'icône et le texte
-      const Text(
+      SizedBox(width: 8), // Espace entre l'icône et le texte
+      Text(
         'Se connecter avec GitHub',
         style: TextStyle(
           fontSize: 16,
