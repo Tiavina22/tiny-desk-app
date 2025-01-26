@@ -67,6 +67,37 @@ Future<void> loginWithGitHub(BuildContext context) async {
   }
 }
 
+Future<void> loginWithGmail(BuildContext context) async {
+  const url = 'http://localhost:8080/auth/google';
+
+  try {
+    // Ouvrir l'URL google dans le navigateur par défaut
+      await Process.run('xdg-open', [url]);
+
+      // Démarrer un serveur local pour intercepter la redirection
+      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8081);
+      server.listen((HttpRequest request) async {
+        // Récupérer le token depuis l'URL de redirection
+        final token = request.uri.queryParameters['token'];
+        if (token != null) {
+          await saveToken(token);
+          // Naviguer vers la page home_screen
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+
+        // Répondre au navigateur
+        request.response
+          ..write('Connexion réussie. Vous pouvez fermer cette fenêtre.')
+          ..close();
+
+        // Arrêter le serveur après avoir récupéré le token
+        await server.close();
+      });
+  } catch (e) {
+    throw 'Impossible de lancer $url: $e';
+  }
+}
+
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('authToken', token);

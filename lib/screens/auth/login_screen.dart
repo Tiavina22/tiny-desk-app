@@ -34,6 +34,22 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _loginWithGmail() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _authService.loginWithGmail(context);
+    } catch (e) {
+      _showErrorMessage('Erreur : ${e.toString()}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   void _login() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -223,6 +239,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                         ),
                         const SizedBox(height: 20),
+                       ElevatedButton(
+  onPressed: _isLoading ? null : _loginWithGmail,
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromARGB(255, 104, 14, 14),
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  child: const Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      FaIcon(
+        FontAwesomeIcons.google, // Icône GitHub de Font Awesome
+        color: Colors.white,
+        size: 24,
+      ),
+      SizedBox(width: 8), // Espace entre l'icône et le texte
+      Text(
+        'Se connecter avec Gmail',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Couleur blanche pour le texte
+        ),
+      ),
+    ],
+  ),
+),
+                        const SizedBox(height: 10),
                        ElevatedButton(
   onPressed: _isLoading ? null : _loginWithGitHub,
   style: ElevatedButton.styleFrom(
