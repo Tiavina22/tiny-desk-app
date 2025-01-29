@@ -8,27 +8,7 @@ This software est conçue pour résoudre le problème de gestion quotidienne des
 
 ## Features principales :
 
-### Done :
-
-| **Feature**                      | **Description**                                                                                                                                     |
-|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Authentification**              | Permet à l'utilisateur de créer un compte et de se connecter pour accéder à ses données personnelles. Synchronisation des données entre plusieurs appareils via un serveur backend. |
-| - Login                           |                                                                                                                                                     |
-| - Inscription                     |                                                                                                                                                     |
-| **Ajout d'éléments**              |                                                                                                                                                     |
-| - Commandes                       | Ajouter des commandes avec un titre, une description et la commande elle-même (peut être une ou plusieurs commandes).                              |
-| - Codes                           | Ajouter des extraits de code avec un titre, une description et le code à sauvegarder.                                                               |
-| - Notes                           | Ajouter des notes avec un titre et une description, pour stocker des informations importantes ou des rappels.                                        |
-| **Recherche**                     | Permet à l'utilisateur de rechercher des commandes, des extraits de code ou des notes par titre ou description.                                     |
-| **Configuration**                 | Mode sombre et mode clair pour personnaliser l'interface. Option de synchronisation automatique des données lorsque la connexion est rétablie, ou synchronisation manuelle. |
-| **Déconnexion (Logout)**          | Permet à l'utilisateur de se déconnecter de son compte.                                                                                             |
-| **Catégories**                    | Les éléments peuvent être classés en trois catégories : Commandes, Codes, et Notes, pour une meilleure organisation.                                |
-
-### Not completed :
-
-| **Feature**                      | **Description**                                                                                                                                     |
-|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Synchronisation en ligne**      | La synchronisation des données avec un serveur en ligne est activée pour la sauvegarde des données et l'accès depuis différents appareils.         |
+### Done
 
 ## Plus de features
 Pour le moment, je n'ai pas d'idées précises, mais cela viendra dans le futur.
