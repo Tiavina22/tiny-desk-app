@@ -215,65 +215,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                   ],
                 )
-              else if (isCode)
-                Stack(
-                  children: [
-                    // Affichage du code avec coloration syntaxique
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(0.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: HighlightView(
-                        _contentController.text,
-                        language: 'dart',
-                        theme: monokaiSublimeTheme,
-                        padding: const EdgeInsets.all(12.0),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Courier',
-                          fontSize: 14.0,
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-
-                    // Champ de texte transparent pour l'édition
-                    Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextField(
-                        controller: _contentController,
-                        style: TextStyle(
-                          fontFamily: 'Courier',
-                          fontSize: 14.0,
-                          height: 1.5,
-                          color: Colors.transparent,
-                        ),
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                          hintText: 'Ajoutez du contenu ici...',
-                          hintStyle: TextStyle(color: Colors.transparent),
-                          border: InputBorder.none,
-                        ),
-                        cursorColor: Colors.white,
-                        onChanged: (text) {
-                          setState(() {});
-                        },
-                      ),
-                    ),
-
-                    // Icône de copie en haut à droite
-                    Positioned(
-                      top: 8.0,
-                      right: 8.0,
-                      child: IconButton(
-                        icon: const Icon(Icons.copy,
-                            color: Color.fromARGB(255, 136, 136, 136)),
-                        onPressed: _copyToClipboard,
-                      ),
-                    ),
-                  ],
-                )
+              
               else
                 TextField(
                   controller: _contentController,
